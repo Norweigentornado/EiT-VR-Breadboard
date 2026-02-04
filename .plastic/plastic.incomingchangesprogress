@@ -1,0 +1,20 @@
+[
+  {
+    "MountId": "56e62dd7-241f-41e9-8c6b-dd4ca4513e62",
+    "AncestorCsetIds": [
+      1
+    ],
+    "SourceCsetId": 2,
+    "DestinationCsetId": 1,
+    "FileConflicts": [
+      {
+        "Path": "/ProjectSettings/EditorBuildSettings.asset",
+        "ItemId": 142,
+        "ParentItemId": 135,
+        "BaseRevId": 107,
+        "SourceRevId": 2549,
+        "DestinationRevId": 107
+      }
+    ]
+  }
+]

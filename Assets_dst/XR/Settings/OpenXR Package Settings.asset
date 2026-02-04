@@ -1,0 +1,1531 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8770258941793371537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ef793c31862a37448e907829482ef80, type: 3}
+  m_Name: OculusQuestFeature Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR.Features.OculusQuestSupport::UnityEngine.XR.OpenXR.Features.OculusQuestSupport.OculusQuestFeature
+  m_enabled: 0
+  nameUi: Oculus Quest Support
+  version: 1.0.0
+  featureIdInternal: com.unity.openxr.feature.oculusquest
+  openxrExtensionStrings: XR_OCULUS_android_initialize_loader
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+  targetQuest: 1
+  targetQuest2: 1
+--- !u!114 &-8316333209303117396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3cf79659a011bd419c7a2a30eb74e9a, type: 3}
+  m_Name: EyeGazeInteraction Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.EyeGazeInteraction
+  m_enabled: 0
+  nameUi: Eye Gaze Interaction Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.eyetracking
+  openxrExtensionStrings: XR_EXT_eye_gaze_interaction
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-8206377812503731260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 761fdd4502cb7a84e9ec7a2b24f33f37, type: 3}
+  m_Name: MicrosoftMotionControllerProfile Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.MicrosoftMotionControllerProfile
+  m_enabled: 0
+  nameUi: Microsoft Motion Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.microsoftmotioncontroller
+  openxrExtensionStrings: 
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-7596030523367200346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 056125dd64c0ed540b40a4af74f7b495, type: 3}
+  m_Name: RuntimeDebuggerOpenXRFeature Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR.Features.RuntimeDebugger::UnityEngine.XR.OpenXR.Features.RuntimeDebugger.RuntimeDebuggerOpenXRFeature
+  m_enabled: 0
+  nameUi: Runtime Debugger
+  version: 1
+  featureIdInternal: com.unity.openxr.features.runtimedebugger
+  openxrExtensionStrings: 
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+  cacheSize: 1048576
+  perThreadCacheSize: 51200
+--- !u!114 &-6682226890488420801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 486b5e28864f9a94b979b9620ce5006d, type: 3}
+  m_Name: ConformanceAutomationFeature Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR.Features.ConformanceAutomation::UnityEngine.XR.OpenXR.Features.ConformanceAutomation.ConformanceAutomationFeature
+  m_enabled: 0
+  nameUi: Conformance Automation
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.conformance
+  openxrExtensionStrings: XR_EXT_conformance_automation
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-6370093105609958263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f6bfdbcb316ed242b30a8798c9eb853, type: 3}
+  m_Name: KHRSimpleControllerProfile Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.KHRSimpleControllerProfile
+  m_enabled: 0
+  nameUi: Khronos Simple Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.khrsimpleprofile
+  openxrExtensionStrings: 
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-6323499881692482318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f028123e2efe1d443875bc7609b4a98b, type: 3}
+  m_Name: PalmPoseInteraction Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.PalmPoseInteraction
+  m_enabled: 0
+  nameUi: Palm Pose
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.palmpose
+  openxrExtensionStrings: XR_EXT_palm_pose
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-6265947605180636320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5315f812f023cf4ebf26f7e5d2d70f2, type: 3}
+  m_Name: HPReverbG2ControllerProfile Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.HPReverbG2ControllerProfile
+  m_enabled: 0
+  nameUi: HP Reverb G2 Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.hpreverb
+  openxrExtensionStrings: XR_EXT_hp_mixed_reality_controller
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-5369240439821470881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01512f11fe5096443ad972feb69271f6, type: 3}
+  m_Name: SpaceWarpFeature Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.SpaceWarpFeature
+  m_enabled: 0
+  nameUi: Application SpaceWarp
+  version: 1.0.0
+  featureIdInternal: com.unity.openxr.feature.spacewarp
+  openxrExtensionStrings: XR_FB_space_warp
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+  m_UseRightHandedNDC: 0
+--- !u!114 &-5288351138455773792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 761fdd4502cb7a84e9ec7a2b24f33f37, type: 3}
+  m_Name: MicrosoftMotionControllerProfile Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.MicrosoftMotionControllerProfile
+  m_enabled: 0
+  nameUi: Microsoft Motion Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.microsoftmotioncontroller
+  openxrExtensionStrings: 
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-5191845923973012605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5019471fb2174e5c852ecd4047163007, type: 3}
+  m_Name: HandInteractionProfile Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.HandInteractionProfile
+  m_enabled: 0
+  nameUi: Hand Interaction Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.handinteraction
+  openxrExtensionStrings: XR_EXT_hand_interaction
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-4020964480094591168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5a1f07dc5afe854f9f12a4194aca3fb, type: 3}
+  m_Name: Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.OpenXRSettings
+  features:
+  - {fileID: -6682226890488420801}
+  - {fileID: 4444419872643784448}
+  - {fileID: 4748111701860363251}
+  - {fileID: -2263930228679075810}
+  - {fileID: -1809829643944181048}
+  - {fileID: 638190435936077096}
+  - {fileID: -6265947605180636320}
+  - {fileID: 519433842744881084}
+  - {fileID: -6370093105609958263}
+  - {fileID: 7393032128132388160}
+  - {fileID: 97305464622728265}
+  - {fileID: -2470675347392951211}
+  - {fileID: -5288351138455773792}
+  - {fileID: 5247186344143580150}
+  - {fileID: -114544108808529352}
+  - {fileID: -6323499881692482318}
+  - {fileID: -901418238874647476}
+  - {fileID: 7917787683777700974}
+  - {fileID: 8602833498645039083}
+  customLoaderName: 
+  m_renderMode: 1
+  m_latencyOptimization: 0
+  m_autoColorSubmissionMode: 1
+  m_colorSubmissionModes:
+    m_List: 00000000
+  m_depthSubmissionMode: 0
+  m_spacewarpMotionVectorTextureFormat: 0
+  m_optimizeBufferDiscards: 0
+  m_symmetricProjection: 0
+  m_optimizeMultiviewRenderRegions: 0
+  m_multiviewRenderRegionsOptimizationMode: 0
+  m_hasMigratedMultiviewRenderRegionSetting: 1
+  m_foveatedRenderingApi: 0
+  m_useOpenXRPredictedTime: 0
+--- !u!114 &-3868331677222826324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b213d3e3c7f3109449eb46a4c8ee42f0, type: 3}
+  m_Name: XrPerformanceSettingsFeature Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Extensions.PerformanceSettings.XrPerformanceSettingsFeature
+  m_enabled: 0
+  nameUi: XR Performance Settings
+  version: 1.0.0
+  featureIdInternal: com.unity.openxr.feature.extension.performance_settings
+  openxrExtensionStrings: XR_EXT_performance_settings
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-3773981982609306793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f028123e2efe1d443875bc7609b4a98b, type: 3}
+  m_Name: PalmPoseInteraction Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.PalmPoseInteraction
+  m_enabled: 0
+  nameUi: Palm Pose
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.palmpose
+  openxrExtensionStrings: XR_EXT_palm_pose
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-3744854392074709387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f647cc0545697264a9878224faada6d5, type: 3}
+  m_Name: MetaQuestFeature Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR.Features.MetaQuestSupport::UnityEngine.XR.OpenXR.Features.MetaQuestSupport.MetaQuestFeature
+  m_enabled: 0
+  nameUi: Meta Quest Support
+  version: 1.0.0
+  featureIdInternal: com.unity.openxr.feature.metaquest
+  openxrExtensionStrings: XR_OCULUS_android_initialize_loader
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+  targetDevices:
+  - visibleName: Quest
+    manifestName: quest
+    enabled: 1
+  - visibleName: Quest 2
+    manifestName: quest2
+    enabled: 1
+  - visibleName: Quest Pro
+    manifestName: cambria
+    enabled: 1
+  - visibleName: Quest 3
+    manifestName: eureka
+    enabled: 1
+  - visibleName: Quest 3S
+    manifestName: quest3s
+    enabled: 1
+  forceRemoveInternetPermission: 0
+  m_symmetricProjection: 0
+  m_foveatedRenderingApi: 0
+  systemSplashScreen: {fileID: 0}
+  m_optimizeBufferDiscards: 1
+  lateLatchingMode: 0
+  lateLatchingDebug: 0
+  optimizeMultiviewRenderRegions: 0
+  m_multiviewRenderRegionsOptimizationMode: 0
+  m_hasMigratedMultiviewRenderRegions: 1
+  spacewarpMotionVectorTextureFormat: 0
+--- !u!114 &-3721834172317887128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5a1f07dc5afe854f9f12a4194aca3fb, type: 3}
+  m_Name: WebGL
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.OpenXRSettings
+  features:
+  - {fileID: -2510690890970232491}
+  customLoaderName: 
+  m_renderMode: 1
+  m_latencyOptimization: 0
+  m_autoColorSubmissionMode: 1
+  m_colorSubmissionModes:
+    m_List: 00000000
+  m_depthSubmissionMode: 0
+  m_spacewarpMotionVectorTextureFormat: 0
+  m_optimizeBufferDiscards: 0
+  m_symmetricProjection: 0
+  m_optimizeMultiviewRenderRegions: 0
+  m_multiviewRenderRegionsOptimizationMode: 0
+  m_hasMigratedMultiviewRenderRegionSetting: 1
+  m_foveatedRenderingApi: 0
+  m_useOpenXRPredictedTime: 0
+--- !u!114 &-3302889217904833806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: feeef8d85de8db242bdda70cc7ff5acd, type: 3}
+  m_Name: OculusTouchControllerProfile Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.OculusTouchControllerProfile
+  m_enabled: 0
+  nameUi: Oculus Touch Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.oculustouch
+  openxrExtensionStrings: 
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-2510690890970232491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b213d3e3c7f3109449eb46a4c8ee42f0, type: 3}
+  m_Name: XrPerformanceSettingsFeature WebGL
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Extensions.PerformanceSettings.XrPerformanceSettingsFeature
+  m_enabled: 0
+  nameUi: XR Performance Settings
+  version: 1.0.0
+  featureIdInternal: com.unity.openxr.feature.extension.performance_settings
+  openxrExtensionStrings: XR_EXT_performance_settings
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-2470675347392951211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f928d0d73a35f294fbe357ca17aa3547, type: 3}
+  m_Name: MicrosoftHandInteraction Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.MicrosoftHandInteraction
+  m_enabled: 0
+  nameUi: Microsoft Hand Interaction Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.handtracking
+  openxrExtensionStrings: XR_MSFT_hand_interaction
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-2263930228679075810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a75d1f5ff90154ea2a8e58222a1f59, type: 3}
+  m_Name: FoveatedRenderingFeature Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.FoveatedRenderingFeature
+  m_enabled: 0
+  nameUi: Foveated Rendering
+  version: 1
+  featureIdInternal: com.unity.openxr.feature.foveatedrendering
+  openxrExtensionStrings: XR_UNITY_foveation XR_FB_foveation XR_FB_foveation_configuration
+    XR_FB_swapchain_update_state XR_FB_foveation_vulkan XR_META_foveation_eye_tracked
+    XR_META_vulkan_swapchain_create_info
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+  enableSubsampledLayout: 0
+--- !u!114 &-1809829643944181048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a24be4b5ebfe5f4d8ed1de9b25cb7aa, type: 3}
+  m_Name: HandCommonPosesInteraction Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.HandCommonPosesInteraction
+  m_enabled: 0
+  nameUi: Hand Interaction Poses
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.handinteractionposes
+  openxrExtensionStrings: XR_EXT_hand_interaction
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-1489165986432885221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b7365b139f7aec43b23d26b7a48b5a6, type: 3}
+  m_Name: MetaQuestTouchPlusControllerProfile Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.MetaQuestTouchPlusControllerProfile
+  m_enabled: 0
+  nameUi: Meta Quest Touch Plus Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.metaquestplus
+  openxrExtensionStrings: XR_META_touch_controller_plus
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-1375711264985187656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 486b5e28864f9a94b979b9620ce5006d, type: 3}
+  m_Name: ConformanceAutomationFeature Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR.Features.ConformanceAutomation::UnityEngine.XR.OpenXR.Features.ConformanceAutomation.ConformanceAutomationFeature
+  m_enabled: 0
+  nameUi: Conformance Automation
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.conformance
+  openxrExtensionStrings: XR_EXT_conformance_automation
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-977421869902614770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f928d0d73a35f294fbe357ca17aa3547, type: 3}
+  m_Name: MicrosoftHandInteraction Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.MicrosoftHandInteraction
+  m_enabled: 0
+  nameUi: Microsoft Hand Interaction Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.handtracking
+  openxrExtensionStrings: XR_MSFT_hand_interaction
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-901418238874647476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 056125dd64c0ed540b40a4af74f7b495, type: 3}
+  m_Name: RuntimeDebuggerOpenXRFeature Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR.Features.RuntimeDebugger::UnityEngine.XR.OpenXR.Features.RuntimeDebugger.RuntimeDebuggerOpenXRFeature
+  m_enabled: 0
+  nameUi: Runtime Debugger
+  version: 1
+  featureIdInternal: com.unity.openxr.features.runtimedebugger
+  openxrExtensionStrings: 
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+  cacheSize: 1048576
+  perThreadCacheSize: 51200
+--- !u!114 &-402352083802122801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b7365b139f7aec43b23d26b7a48b5a6, type: 3}
+  m_Name: MetaQuestTouchPlusControllerProfile Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.MetaQuestTouchPlusControllerProfile
+  m_enabled: 0
+  nameUi: Meta Quest Touch Plus Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.metaquestplus
+  openxrExtensionStrings: XR_META_touch_controller_plus
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &-348388049847513585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a75d1f5ff90154ea2a8e58222a1f59, type: 3}
+  m_Name: FoveatedRenderingFeature Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.FoveatedRenderingFeature
+  m_enabled: 0
+  nameUi: Foveated Rendering
+  version: 1
+  featureIdInternal: com.unity.openxr.feature.foveatedrendering
+  openxrExtensionStrings: XR_UNITY_foveation XR_FB_foveation XR_FB_foveation_configuration
+    XR_FB_swapchain_update_state XR_FB_foveation_vulkan XR_META_foveation_eye_tracked
+    XR_META_vulkan_swapchain_create_info
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+  enableSubsampledLayout: 0
+--- !u!114 &-114544108808529352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: feeef8d85de8db242bdda70cc7ff5acd, type: 3}
+  m_Name: OculusTouchControllerProfile Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.OculusTouchControllerProfile
+  m_enabled: 0
+  nameUi: Oculus Touch Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.oculustouch
+  openxrExtensionStrings: 
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f0ebc320a151d3408ea1e9fce54d40e, type: 3}
+  m_Name: OpenXR Package Settings
+  m_EditorClassIdentifier: Unity.XR.OpenXR.Editor::UnityEditor.XR.OpenXR.OpenXRPackageSettings
+  Keys: 01000000070000000d0000000e000000
+  Values:
+  - {fileID: -4020964480094591168}
+  - {fileID: 1267852171542271674}
+  - {fileID: -3721834172317887128}
+  - {fileID: 7769572964032835681}
+--- !u!114 &97305464622728265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4b862ee14fb479fbfe5fffe655d3ed3, type: 3}
+  m_Name: MetaQuestTouchProControllerProfile Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.MetaQuestTouchProControllerProfile
+  m_enabled: 0
+  nameUi: Meta Quest Touch Pro Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.metaquestpro
+  openxrExtensionStrings: XR_FB_touch_controller_pro
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &519433842744881084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 274c02963f889a64e90bc2e596e21d13, type: 3}
+  m_Name: HTCViveControllerProfile Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.HTCViveControllerProfile
+  m_enabled: 0
+  nameUi: HTC Vive Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.htcvive
+  openxrExtensionStrings: 
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &638190435936077096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5019471fb2174e5c852ecd4047163007, type: 3}
+  m_Name: HandInteractionProfile Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.HandInteractionProfile
+  m_enabled: 0
+  nameUi: Hand Interaction Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.handinteraction
+  openxrExtensionStrings: XR_EXT_hand_interaction
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &1006170462799640989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a75d1f5ff90154ea2a8e58222a1f59, type: 3}
+  m_Name: FoveatedRenderingFeature Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.FoveatedRenderingFeature
+  m_enabled: 0
+  nameUi: Foveated Rendering
+  version: 1
+  featureIdInternal: com.unity.openxr.feature.foveatedrendering
+  openxrExtensionStrings: XR_UNITY_foveation XR_FB_foveation XR_FB_foveation_configuration
+    XR_FB_swapchain_update_state XR_FB_foveation_vulkan XR_META_foveation_eye_tracked
+    XR_META_vulkan_swapchain_create_info
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+  enableSubsampledLayout: 0
+--- !u!114 &1267852171542271674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5a1f07dc5afe854f9f12a4194aca3fb, type: 3}
+  m_Name: Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.OpenXRSettings
+  features:
+  - {fileID: -5369240439821470881}
+  - {fileID: 5814942961127034624}
+  - {fileID: -1375711264985187656}
+  - {fileID: 1492843721431639512}
+  - {fileID: 4845314056510655007}
+  - {fileID: -348388049847513585}
+  - {fileID: 7064868744378263951}
+  - {fileID: 2407887364053865804}
+  - {fileID: 4256572540296185766}
+  - {fileID: -3744854392074709387}
+  - {fileID: -1489165986432885221}
+  - {fileID: 7134902592109565702}
+  - {fileID: -977421869902614770}
+  - {fileID: 7679545752196924935}
+  - {fileID: -8770258941793371537}
+  - {fileID: -3302889217904833806}
+  - {fileID: -3773981982609306793}
+  - {fileID: -7596030523367200346}
+  - {fileID: -3868331677222826324}
+  customLoaderName: 
+  m_renderMode: 1
+  m_latencyOptimization: 0
+  m_autoColorSubmissionMode: 1
+  m_colorSubmissionModes:
+    m_List: 00000000
+  m_depthSubmissionMode: 0
+  m_spacewarpMotionVectorTextureFormat: 0
+  m_optimizeBufferDiscards: 0
+  m_symmetricProjection: 0
+  m_optimizeMultiviewRenderRegions: 0
+  m_multiviewRenderRegionsOptimizationMode: 0
+  m_hasMigratedMultiviewRenderRegionSetting: 1
+  m_foveatedRenderingApi: 0
+  m_useOpenXRPredictedTime: 0
+--- !u!114 &1492843721431639512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c5b5af5107e35a43818d5411328bfc3, type: 3}
+  m_Name: DPadInteraction Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.DPadInteraction
+  m_enabled: 0
+  nameUi: D-Pad Binding
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.dpadinteraction
+  openxrExtensionStrings: XR_KHR_binding_modification XR_EXT_dpad_binding
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+  forceThresholdLeft: 0.5
+  forceThresholdReleaseLeft: 0.4
+  centerRegionLeft: 0.5
+  wedgeAngleLeft: 1.5707964
+  isStickyLeft: 0
+  forceThresholdRight: 0.5
+  forceThresholdReleaseRight: 0.4
+  centerRegionRight: 0.5
+  wedgeAngleRight: 1.5707964
+  isStickyRight: 0
+  extensionStrings:
+  - XR_KHR_binding_modification
+  - XR_EXT_dpad_binding
+--- !u!114 &1762405224110511958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5315f812f023cf4ebf26f7e5d2d70f2, type: 3}
+  m_Name: HPReverbG2ControllerProfile Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.HPReverbG2ControllerProfile
+  m_enabled: 0
+  nameUi: HP Reverb G2 Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.hpreverb
+  openxrExtensionStrings: XR_EXT_hp_mixed_reality_controller
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &2407887364053865804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5019471fb2174e5c852ecd4047163007, type: 3}
+  m_Name: HandInteractionProfile Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.HandInteractionProfile
+  m_enabled: 0
+  nameUi: Hand Interaction Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.handinteraction
+  openxrExtensionStrings: XR_EXT_hand_interaction
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &2464338656563392601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f928d0d73a35f294fbe357ca17aa3547, type: 3}
+  m_Name: MicrosoftHandInteraction Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.MicrosoftHandInteraction
+  m_enabled: 0
+  nameUi: Microsoft Hand Interaction Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.handtracking
+  openxrExtensionStrings: XR_MSFT_hand_interaction
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &2675567873906002031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 056125dd64c0ed540b40a4af74f7b495, type: 3}
+  m_Name: RuntimeDebuggerOpenXRFeature Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR.Features.RuntimeDebugger::UnityEngine.XR.OpenXR.Features.RuntimeDebugger.RuntimeDebuggerOpenXRFeature
+  m_enabled: 0
+  nameUi: Runtime Debugger
+  version: 1
+  featureIdInternal: com.unity.openxr.features.runtimedebugger
+  openxrExtensionStrings: 
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+  cacheSize: 1048576
+  perThreadCacheSize: 51200
+--- !u!114 &4100167699653032885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f6bfdbcb316ed242b30a8798c9eb853, type: 3}
+  m_Name: KHRSimpleControllerProfile Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.KHRSimpleControllerProfile
+  m_enabled: 0
+  nameUi: Khronos Simple Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.khrsimpleprofile
+  openxrExtensionStrings: 
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &4148342798098838104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d6ccd3d0ef0f1d458e69421dccbdae1, type: 3}
+  m_Name: ValveIndexControllerProfile Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.ValveIndexControllerProfile
+  m_enabled: 0
+  nameUi: Valve Index Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.valveindex
+  openxrExtensionStrings: 
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &4256572540296185766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f6bfdbcb316ed242b30a8798c9eb853, type: 3}
+  m_Name: KHRSimpleControllerProfile Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.KHRSimpleControllerProfile
+  m_enabled: 0
+  nameUi: Khronos Simple Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.khrsimpleprofile
+  openxrExtensionStrings: 
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &4437917940861435932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 274c02963f889a64e90bc2e596e21d13, type: 3}
+  m_Name: HTCViveControllerProfile Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.HTCViveControllerProfile
+  m_enabled: 0
+  nameUi: HTC Vive Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.htcvive
+  openxrExtensionStrings: 
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &4444419872643784448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c5b5af5107e35a43818d5411328bfc3, type: 3}
+  m_Name: DPadInteraction Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.DPadInteraction
+  m_enabled: 0
+  nameUi: D-Pad Binding
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.dpadinteraction
+  openxrExtensionStrings: XR_KHR_binding_modification XR_EXT_dpad_binding
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+  forceThresholdLeft: 0.5
+  forceThresholdReleaseLeft: 0.4
+  centerRegionLeft: 0.5
+  wedgeAngleLeft: 1.5707964
+  isStickyLeft: 0
+  forceThresholdRight: 0.5
+  forceThresholdReleaseRight: 0.4
+  centerRegionRight: 0.5
+  wedgeAngleRight: 1.5707964
+  isStickyRight: 0
+  extensionStrings:
+  - XR_KHR_binding_modification
+  - XR_EXT_dpad_binding
+--- !u!114 &4491629249865917473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: feeef8d85de8db242bdda70cc7ff5acd, type: 3}
+  m_Name: OculusTouchControllerProfile Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.OculusTouchControllerProfile
+  m_enabled: 0
+  nameUi: Oculus Touch Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.oculustouch
+  openxrExtensionStrings: 
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &4748111701860363251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3cf79659a011bd419c7a2a30eb74e9a, type: 3}
+  m_Name: EyeGazeInteraction Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.EyeGazeInteraction
+  m_enabled: 0
+  nameUi: Eye Gaze Interaction Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.eyetracking
+  openxrExtensionStrings: XR_EXT_eye_gaze_interaction
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &4845089348110222732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f028123e2efe1d443875bc7609b4a98b, type: 3}
+  m_Name: PalmPoseInteraction Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.PalmPoseInteraction
+  m_enabled: 0
+  nameUi: Palm Pose
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.palmpose
+  openxrExtensionStrings: XR_EXT_palm_pose
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &4845314056510655007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3cf79659a011bd419c7a2a30eb74e9a, type: 3}
+  m_Name: EyeGazeInteraction Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.EyeGazeInteraction
+  m_enabled: 0
+  nameUi: Eye Gaze Interaction Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.eyetracking
+  openxrExtensionStrings: XR_EXT_eye_gaze_interaction
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &5247186344143580150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7de993716e042c6499d0c18eed3a773c, type: 3}
+  m_Name: MockRuntime Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR.Features.MockRuntime::UnityEngine.XR.OpenXR.Features.Mock.MockRuntime
+  m_enabled: 0
+  nameUi: Mock Runtime
+  version: 0.0.2
+  featureIdInternal: com.unity.openxr.feature.mockruntime
+  openxrExtensionStrings: XR_UNITY_null_gfx XR_UNITY_android_present
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+  ignoreValidationErrors: 0
+--- !u!114 &5568477315705631308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 486b5e28864f9a94b979b9620ce5006d, type: 3}
+  m_Name: ConformanceAutomationFeature Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR.Features.ConformanceAutomation::UnityEngine.XR.OpenXR.Features.ConformanceAutomation.ConformanceAutomationFeature
+  m_enabled: 0
+  nameUi: Conformance Automation
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.conformance
+  openxrExtensionStrings: XR_EXT_conformance_automation
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &5814942961127034624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92efb7dda02dc484c90845a437c4784e, type: 3}
+  m_Name: AutomaticDynamicResolutionFeature Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.AutomaticDynamicResolutionFeature
+  m_enabled: 0
+  nameUi: Automatic Viewport Dynamic Resolution
+  version: 1.0.0
+  featureIdInternal: com.unity.openxr.feature.ViewportDynamicResolution
+  openxrExtensionStrings: XR_META_recommended_layer_resolution XR_ANDROID_recommended_resolution
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+  m_MinResolutionScalar: 0.05
+  m_MaxResolutionScalar: 1
+--- !u!114 &6717195673891079791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b213d3e3c7f3109449eb46a4c8ee42f0, type: 3}
+  m_Name: XrPerformanceSettingsFeature Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Extensions.PerformanceSettings.XrPerformanceSettingsFeature
+  m_enabled: 0
+  nameUi: XR Performance Settings
+  version: 1.0.0
+  featureIdInternal: com.unity.openxr.feature.extension.performance_settings
+  openxrExtensionStrings: XR_EXT_performance_settings
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &7064868744378263951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a24be4b5ebfe5f4d8ed1de9b25cb7aa, type: 3}
+  m_Name: HandCommonPosesInteraction Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.HandCommonPosesInteraction
+  m_enabled: 0
+  nameUi: Hand Interaction Poses
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.handinteractionposes
+  openxrExtensionStrings: XR_EXT_hand_interaction
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &7134902592109565702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4b862ee14fb479fbfe5fffe655d3ed3, type: 3}
+  m_Name: MetaQuestTouchProControllerProfile Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.MetaQuestTouchProControllerProfile
+  m_enabled: 0
+  nameUi: Meta Quest Touch Pro Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.metaquestpro
+  openxrExtensionStrings: XR_FB_touch_controller_pro
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &7393032128132388160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b7365b139f7aec43b23d26b7a48b5a6, type: 3}
+  m_Name: MetaQuestTouchPlusControllerProfile Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.MetaQuestTouchPlusControllerProfile
+  m_enabled: 0
+  nameUi: Meta Quest Touch Plus Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.metaquestplus
+  openxrExtensionStrings: XR_META_touch_controller_plus
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &7679545752196924935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7de993716e042c6499d0c18eed3a773c, type: 3}
+  m_Name: MockRuntime Android
+  m_EditorClassIdentifier: Unity.XR.OpenXR.Features.MockRuntime::UnityEngine.XR.OpenXR.Features.Mock.MockRuntime
+  m_enabled: 0
+  nameUi: Mock Runtime
+  version: 0.0.2
+  featureIdInternal: com.unity.openxr.feature.mockruntime
+  openxrExtensionStrings: XR_UNITY_null_gfx XR_UNITY_android_present
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+  ignoreValidationErrors: 0
+--- !u!114 &7713978269703032458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c5b5af5107e35a43818d5411328bfc3, type: 3}
+  m_Name: DPadInteraction Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.DPadInteraction
+  m_enabled: 0
+  nameUi: D-Pad Binding
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.dpadinteraction
+  openxrExtensionStrings: XR_KHR_binding_modification XR_EXT_dpad_binding
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+  forceThresholdLeft: 0.5
+  forceThresholdReleaseLeft: 0.4
+  centerRegionLeft: 0.5
+  wedgeAngleLeft: 1.5707964
+  isStickyLeft: 0
+  forceThresholdRight: 0.5
+  forceThresholdReleaseRight: 0.4
+  centerRegionRight: 0.5
+  wedgeAngleRight: 1.5707964
+  isStickyRight: 0
+  extensionStrings:
+  - XR_KHR_binding_modification
+  - XR_EXT_dpad_binding
+--- !u!114 &7769572964032835681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5a1f07dc5afe854f9f12a4194aca3fb, type: 3}
+  m_Name: Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.OpenXRSettings
+  features:
+  - {fileID: 5568477315705631308}
+  - {fileID: 7713978269703032458}
+  - {fileID: -8316333209303117396}
+  - {fileID: 1006170462799640989}
+  - {fileID: 8265744724190088320}
+  - {fileID: -5191845923973012605}
+  - {fileID: 1762405224110511958}
+  - {fileID: 4437917940861435932}
+  - {fileID: 4100167699653032885}
+  - {fileID: -402352083802122801}
+  - {fileID: 8663272865279765732}
+  - {fileID: 2464338656563392601}
+  - {fileID: -8206377812503731260}
+  - {fileID: 4491629249865917473}
+  - {fileID: 4845089348110222732}
+  - {fileID: 2675567873906002031}
+  - {fileID: 4148342798098838104}
+  - {fileID: 6717195673891079791}
+  customLoaderName: 
+  m_renderMode: 1
+  m_latencyOptimization: 0
+  m_autoColorSubmissionMode: 1
+  m_colorSubmissionModes:
+    m_List: 00000000
+  m_depthSubmissionMode: 0
+  m_spacewarpMotionVectorTextureFormat: 0
+  m_optimizeBufferDiscards: 0
+  m_symmetricProjection: 0
+  m_optimizeMultiviewRenderRegions: 0
+  m_multiviewRenderRegionsOptimizationMode: 0
+  m_hasMigratedMultiviewRenderRegionSetting: 1
+  m_foveatedRenderingApi: 0
+  m_useOpenXRPredictedTime: 0
+--- !u!114 &7917787683777700974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d6ccd3d0ef0f1d458e69421dccbdae1, type: 3}
+  m_Name: ValveIndexControllerProfile Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.ValveIndexControllerProfile
+  m_enabled: 0
+  nameUi: Valve Index Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.valveindex
+  openxrExtensionStrings: 
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &8265744724190088320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a24be4b5ebfe5f4d8ed1de9b25cb7aa, type: 3}
+  m_Name: HandCommonPosesInteraction Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.HandCommonPosesInteraction
+  m_enabled: 0
+  nameUi: Hand Interaction Poses
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.handinteractionposes
+  openxrExtensionStrings: XR_EXT_hand_interaction
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &8602833498645039083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b213d3e3c7f3109449eb46a4c8ee42f0, type: 3}
+  m_Name: XrPerformanceSettingsFeature Standalone
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Extensions.PerformanceSettings.XrPerformanceSettingsFeature
+  m_enabled: 0
+  nameUi: XR Performance Settings
+  version: 1.0.0
+  featureIdInternal: com.unity.openxr.feature.extension.performance_settings
+  openxrExtensionStrings: XR_EXT_performance_settings
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
+--- !u!114 &8663272865279765732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4b862ee14fb479fbfe5fffe655d3ed3, type: 3}
+  m_Name: MetaQuestTouchProControllerProfile Metro
+  m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.MetaQuestTouchProControllerProfile
+  m_enabled: 0
+  nameUi: Meta Quest Touch Pro Controller Profile
+  version: 0.0.1
+  featureIdInternal: com.unity.openxr.feature.input.metaquestpro
+  openxrExtensionStrings: XR_FB_touch_controller_pro
+  company: Unity
+  priority: 0
+  targetOpenXRApiVersion: 
+  required: 0
+  customRuntimeLoaderName: 
