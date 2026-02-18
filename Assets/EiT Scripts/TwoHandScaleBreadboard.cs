@@ -23,9 +23,11 @@ public class TwoHandScaleBreadboard : MonoBehaviour
     private void OnGrab(SelectEnterEventArgs args)
     {
         interactors.Add(args.interactorObject);
+        Debug.Log($"Grabbed! Interactor count: {interactors.Count}");
 
         if (interactors.Count == 2)
         {
+            Debug.Log("Two hands detected - scaling enabled");
             initialDistance = Vector3.Distance(
                 interactors[0].transform.position,
                 interactors[1].transform.position
@@ -50,6 +52,7 @@ public class TwoHandScaleBreadboard : MonoBehaviour
 
             float scaleFactor = currentDistance / initialDistance;
             float newScale = Mathf.Clamp(initialScale.x * scaleFactor, minScale, maxScale);
+            Debug.Log($"InitialDist: {initialDistance}, CurrentDist: {currentDistance}, ScaleFactor: {scaleFactor}, NewScale: {newScale}");
             transform.localScale = Vector3.one * newScale;
         }
     }
