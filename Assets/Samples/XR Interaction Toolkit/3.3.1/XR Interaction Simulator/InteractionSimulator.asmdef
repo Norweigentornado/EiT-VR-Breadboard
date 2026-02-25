@@ -1,5 +1,5 @@
 {
-    "name": "Unity.XR.Interaction.Toolkit.Samples.DeviceSimulator",
+    "name": "Unity.XR.Interaction.Toolkit.Samples.InteractionSimulator",
     "rootNamespace": "",
     "references": [
         "GUID:75469ad4d38634e559750d17036d5f7c",
@@ -19,6 +19,11 @@
             "name": "com.unity.xr.hands",
             "expression": "1.1.0",
             "define": "XR_HANDS_1_1_OR_NEWER"
+        },
+        {
+            "name": "com.unity.xr.hands",
+            "expression": "1.2.1",
+            "define": "XR_HANDS_1_2_OR_NEWER"
         },
         {
             "name": "Unity",
