@@ -1,21 +1,36 @@
-using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
 using System.Collections.Generic;
+using System.Xml.Linq;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 public class TwoHandScaleBreadboard : MonoBehaviour
 {
     [SerializeField] private float minScale = 0.5f;
     [SerializeField] private float maxScale = 5f;
+    [SerializeField] private float scaleSpeed = 2f;
+    [SerializeField] private InputActionReference thumbstickAction;
 
-    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
-    private List<UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor> interactors = new List<UnityEngine.XR.Interaction.Toolkit.Interactors.IXRSelectInteractor>();
-
-    private float initialDistance;
-    private Vector3 initialScale;
+    private XRGrabInteractable grabInteractable;
+    private List<IXRSelectInteractor> interactors = new List<IXRSelectInteractor>();
 
     void Awake()
     {
-        grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+        grabInteractable = GetComponent<XRGrabInteractable>();
+
+        if (grabInteractable == null)
+            grabInteractable = GetComponentInParent<XRGrabInteractable>();
+
+        if (grabInteractable == null)
+        {
+            Debug.LogError("No XRGrabInteractable found on " + gameObject.name);
+            return;
+        }
+
+        grabInteractable.trackPosition = false;
+        grabInteractable.trackRotation = false;
         grabInteractable.selectEntered.AddListener(OnGrab);
         grabInteractable.selectExited.AddListener(OnRelease);
     }
@@ -23,17 +38,6 @@ public class TwoHandScaleBreadboard : MonoBehaviour
     private void OnGrab(SelectEnterEventArgs args)
     {
         interactors.Add(args.interactorObject);
-        Debug.Log($"Grabbed! Interactor count: {interactors.Count}");
-
-        if (interactors.Count == 2)
-        {
-            Debug.Log("Two hands detected - scaling enabled");
-            initialDistance = Vector3.Distance(
-                interactors[0].transform.position,
-                interactors[1].transform.position
-            );
-            initialScale = transform.localScale;
-        }
     }
 
     private void OnRelease(SelectExitEventArgs args)
@@ -43,17 +47,50 @@ public class TwoHandScaleBreadboard : MonoBehaviour
 
     void Update()
     {
-        if (interactors.Count == 2)
+        if (interactors.Count >= 1)
         {
-            float currentDistance = Vector3.Distance(
-                interactors[0].transform.position,
-                interactors[1].transform.position
-            );
+            float scaleInput = 0f;
 
-            float scaleFactor = currentDistance / initialDistance;
-            float newScale = Mathf.Clamp(initialScale.x * scaleFactor, minScale, maxScale);
-            Debug.Log($"InitialDist: {initialDistance}, CurrentDist: {currentDistance}, ScaleFactor: {scaleFactor}, NewScale: {newScale}");
-            transform.localScale = Vector3.one * newScale;
+            if (thumbstickAction != null)
+            {
+                Vector2 thumbstick = thumbstickAction.action.ReadValue<Vector2>();
+                scaleInput = thumbstick.y;
+            }
+
+            if (Keyboard.current != null)
+            {
+                if (Keyboard.current.uKey.isPressed)
+                {
+                    scaleInput = 1f;
+                    Debug.Log("Scaling UP");
+                }
+                if (Keyboard.current.jKey.isPressed)
+                {
+                    scaleInput = -1f;
+                    Debug.Log("Scaling DOWN");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Keyboard.current is null!");
+            }
+
+            Debug.Log($"Interactors: {interactors.Count}, ScaleInput: {scaleInput}, CurrentScale: {transform.localScale.x}");
+
+            if (Mathf.Abs(scaleInput) > 0.1f)
+            {
+                float newScale = Mathf.Clamp(
+                    transform.localScale.x + scaleInput * scaleSpeed * Time.deltaTime,
+                    minScale,
+                    maxScale
+                );
+                Debug.Log($"Applying new scale: {newScale}");
+                transform.localScale = Vector3.one * newScale;
+            }
+        }
+        else
+        {
+            Debug.Log("No interactors - board not grabbed");
         }
     }
 }
