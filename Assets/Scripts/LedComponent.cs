@@ -1,39 +1,41 @@
 using UnityEngine;
 
 /// <summary>
-/// LED component for breadboard simulation.
-/// Has an anode (+) and cathode (-) leg.
-/// Lights up only when anode node has higher voltage than cathode (correct polarity).
-/// Uses a Point Light to illuminate when powered.
+/// LED component. Reads solved node voltages from the CircuitSolver
+/// and dims the point light proportionally to the current through it.
+/// 
+/// Forward voltage: minimum voltage drop anode→cathode to emit any light.
+/// At exactly forwardVoltage the LED is minimally lit.
+/// Above it, brightness scales with current (I = (Vdrop - Vf) / internalResistance).
 /// </summary>
 public class LEDComponent : MonoBehaviour
 {
     [Header("LED Properties")]
-    public Color ledColor = Color.red;
-    [Tooltip("Minimum voltage across the LED needed to light it (forward voltage). Typically 1.8-3.3V.")]
-    public float forwardVoltage = 2f;
+    public Color  ledColor         = Color.red;
+    [Tooltip("Minimum forward voltage to emit light (red≈2V, blue/white≈3V)")]
+    public float  forwardVoltage   = 2f;
+    [Tooltip("Internal resistance used to calculate current once forward voltage is exceeded (Ohms)")]
+    public float  internalResistance = 68f;
+    [Tooltip("Current (Amps) at which the LED reaches maximum brightness")]
+    public float  maxCurrent       = 0.02f; // 20 mA — typical LED max
 
     [Header("Leg Transforms")]
-    [Tooltip("Longer leg — positive/anode")]
+    [Tooltip("Longer leg — anode (+)")]
     public Transform anodeLegTip;
-    [Tooltip("Shorter leg — negative/cathode")]
+    [Tooltip("Shorter leg — cathode (-)")]
     public Transform cathodeLegTip;
 
     [Header("Light Settings")]
-    public float litIntensity = 1.5f;
-    public float lightRange = 0.05f;
+    public float maxLitIntensity = 2f;
+    public float lightRange      = 0.05f;
 
     [Header("Debug")]
-    public bool showDebugInfo = true;
+    public bool showDebugInfo = false;
 
-    // Detected sockets
-    private BreadboardSocket anodeSocket;
-    private BreadboardSocket cathodeSocket;
-
-    // The point light — found or created at runtime
-    private Light pointLight;
-
-    private bool isLit = false;
+    private BreadboardSocket _anodeSocket;
+    private BreadboardSocket _cathodeSocket;
+    private Light            _pointLight;
+    private bool             _isLit = false;
 
     void Start()
     {
@@ -48,122 +50,94 @@ public class LEDComponent : MonoBehaviour
 
     void SetupLight()
     {
-        // Look for an existing Light child, or create one
-        pointLight = GetComponentInChildren<Light>();
+        _pointLight = GetComponentInChildren<Light>();
 
-        if (pointLight == null)
+        if (_pointLight == null)
         {
-            GameObject lightGO = new GameObject("LEDLight");
-            lightGO.transform.SetParent(transform);
-            lightGO.transform.localPosition = Vector3.zero;
-            pointLight = lightGO.AddComponent<Light>();
-            pointLight.type = LightType.Point;
+            var go = new GameObject("LEDLight");
+            go.transform.SetParent(transform);
+            go.transform.localPosition = Vector3.zero;
+            _pointLight = go.AddComponent<Light>();
+            _pointLight.type = LightType.Point;
         }
 
-        pointLight.color = ledColor;
-        pointLight.range = lightRange;
-        pointLight.intensity = 0f;
-        pointLight.enabled = false;
+        _pointLight.color     = ledColor;
+        _pointLight.range     = lightRange;
+        _pointLight.intensity = 0f;
+        _pointLight.enabled   = false;
     }
 
     void DetectSocketConnections()
     {
-        BreadboardSocket newAnode = FindNearestSocket(anodeLegTip);
+        BreadboardSocket newAnode   = FindNearestSocket(anodeLegTip);
         BreadboardSocket newCathode = FindNearestSocket(cathodeLegTip);
 
-        if (newAnode != anodeSocket || newCathode != cathodeSocket)
+        if (newAnode != _anodeSocket || newCathode != _cathodeSocket)
         {
-            anodeSocket = newAnode;
-            cathodeSocket = newCathode;
-
-            if (showDebugInfo)
-                Debug.Log($"[LED] Anode: {(anodeSocket != null ? "connected" : "none")}, " +
-                          $"Cathode: {(cathodeSocket != null ? "connected" : "none")}");
+            _anodeSocket   = newAnode;
+            _cathodeSocket = newCathode;
         }
     }
 
     void EvaluateLED()
     {
-        bool shouldLight = false;
-
-        if (anodeSocket != null && cathodeSocket != null)
+        if (_anodeSocket?.node == null || _cathodeSocket?.node == null)
         {
-            BreadboardNode anodeNode = anodeSocket.node;
-            BreadboardNode cathodeNode = cathodeSocket.node;
-
-            if (anodeNode != null && cathodeNode != null)
-            {
-                float voltageDrop = anodeNode.voltage - cathodeNode.voltage;
-
-                // Only light if forward biased with enough voltage
-                if (voltageDrop >= forwardVoltage)
-                {
-                    shouldLight = true;
-
-                    if (showDebugInfo && !isLit)
-                        Debug.Log($"[LED] Lit! Voltage drop: {voltageDrop}V");
-                }
-                else if (showDebugInfo && isLit)
-                {
-                    if (voltageDrop < 0)
-                        Debug.Log($"[LED] Reverse biased ({voltageDrop}V) — won't light.");
-                    else
-                        Debug.Log($"[LED] Insufficient voltage ({voltageDrop}V, need {forwardVoltage}V).");
-                }
-            }
+            SetBrightness(0f);
+            return;
         }
 
-        if (shouldLight != isLit)
-            SetLit(shouldLight);
+        float anodeV   = _anodeSocket.node.solvedVoltage;
+        float cathodeV = _cathodeSocket.node.solvedVoltage;
+        float vDrop    = anodeV - cathodeV;
+
+        if (vDrop < forwardVoltage)
+        {
+            // Reverse biased or insufficient voltage
+            SetBrightness(0f);
+            return;
+        }
+
+        // Current through LED: I = (Vdrop - Vf) / Rinternal
+        float current    = (vDrop - forwardVoltage) / Mathf.Max(internalResistance, 0.1f);
+        float brightness = Mathf.Clamp01(current / maxCurrent);
+
+        SetBrightness(brightness);
+
+        if (showDebugInfo)
+            Debug.Log($"[LED] Vdrop={vDrop:F2}V  I={current * 1000f:F1}mA  brightness={brightness:P0}");
     }
 
-    void SetLit(bool on)
+    void SetBrightness(float t)
     {
-        isLit = on;
-        pointLight.enabled = on;
-        pointLight.intensity = on ? litIntensity : 0f;
-    }
+        bool shouldBeOn = t > 0.001f;
 
-    void OnDestroy()
-    {
-        SetLit(false);
+        if (shouldBeOn != _isLit)
+        {
+            _isLit              = shouldBeOn;
+            _pointLight.enabled = shouldBeOn;
+        }
+
+        if (shouldBeOn)
+            _pointLight.intensity = Mathf.Lerp(0.1f, maxLitIntensity, t);
     }
 
     BreadboardSocket FindNearestSocket(Transform tip)
     {
         if (tip == null) return null;
 
-        float snapRadius = 0.005f;
-        Collider[] hits = Physics.OverlapSphere(tip.position, snapRadius);
-
+        Collider[] hits = Physics.OverlapSphere(tip.position, 0.005f);
         foreach (var hit in hits)
         {
-            BreadboardSocket socket = hit.GetComponentInParent<BreadboardSocket>();
-            if (socket != null)
-                return socket;
+            BreadboardSocket s = hit.GetComponentInParent<BreadboardSocket>();
+            if (s != null) return s;
         }
-
         return null;
     }
 
     void OnDrawGizmosSelected()
     {
-        if (anodeLegTip != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(anodeLegTip.position, 0.005f);
-#if UNITY_EDITOR
-            UnityEditor.Handles.Label(anodeLegTip.position + Vector3.up * 0.01f, "A+");
-#endif
-        }
-
-        if (cathodeLegTip != null)
-        {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(cathodeLegTip.position, 0.005f);
-#if UNITY_EDITOR
-            UnityEditor.Handles.Label(cathodeLegTip.position + Vector3.up * 0.01f, "K-");
-#endif
-        }
+        if (anodeLegTip   != null) { Gizmos.color = Color.red;  Gizmos.DrawWireSphere(anodeLegTip.position,   0.005f); }
+        if (cathodeLegTip != null) { Gizmos.color = Color.blue; Gizmos.DrawWireSphere(cathodeLegTip.position, 0.005f); }
     }
 }
