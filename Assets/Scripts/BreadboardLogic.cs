@@ -5,13 +5,12 @@ public class BreadboardLogic : MonoBehaviour
 {
     List<BreadboardNode> nodes = new List<BreadboardNode>();
 
-    void Start()
+    void Awake()
     {
         BuildBreadboard();
     }
 
-    void BuildBreadboard()
-    {
+    void BuildBreadboard(){
         foreach (Transform row in transform)
         {
             if (!row.name.Contains("Row"))
@@ -19,19 +18,76 @@ public class BreadboardLogic : MonoBehaviour
 
             BreadboardSocket[] sockets = row.GetComponentsInChildren<BreadboardSocket>();
 
-            if (sockets.Length < 10)
+            if (sockets.Length < 14)
                 continue;
 
-            // Left side A-E
-            CreateNode(sockets, 0, 4);
+            // Sort sockets left → right
+            System.Array.Sort(sockets, (a, b) =>
+                a.transform.position.x.CompareTo(b.transform.position.x));
 
-            // Right side F-J
-            CreateNode(sockets, 5, 9);
+            /*
+            Typical order on your board:
 
-            Debug.Log("Built nodes for " + row.name);
+            0  = left power -
+            1  = left power +
+
+            2-6   = A B C D E
+            7-11  = F G H I J
+
+            12 = right power +
+            13 = right power -
+            */
+
+            CreateNode(sockets, 2, 6);   // A-E
+            CreateNode(sockets, 7, 11);  // F-J
+
+            Debug.Log("Built row nodes for " + row.name);
         }
 
-        Debug.Log("Total nodes created: " + nodes.Count);
+        BuildPowerRails();
+    }
+
+    void BuildPowerRails(){
+        List<BreadboardSocket> leftPlus = new List<BreadboardSocket>();
+        List<BreadboardSocket> leftMinus = new List<BreadboardSocket>();
+
+        List<BreadboardSocket> rightPlus = new List<BreadboardSocket>();
+        List<BreadboardSocket> rightMinus = new List<BreadboardSocket>();
+
+        foreach (Transform row in transform)
+        {
+            if (!row.name.Contains("Row"))
+                continue;
+
+            BreadboardSocket[] sockets = row.GetComponentsInChildren<BreadboardSocket>();
+
+            System.Array.Sort(sockets, (a, b) =>
+                a.transform.position.x.CompareTo(b.transform.position.x));
+
+            leftMinus.Add(sockets[0]);
+            leftPlus.Add(sockets[1]);
+
+            rightPlus.Add(sockets[12]);
+            rightMinus.Add(sockets[13]);
+        }
+
+        CreateVerticalNode(leftMinus);
+        CreateVerticalNode(leftPlus);
+        CreateVerticalNode(rightPlus);
+        CreateVerticalNode(rightMinus);
+    }
+
+    void CreateVerticalNode(List<BreadboardSocket> sockets)
+    {
+        BreadboardNode node = new BreadboardNode();
+
+        foreach (var socket in sockets)
+        {
+            socket.node = node;
+            node.sockets.Add(socket);
+        }
+
+        nodes.Add(node);
     }
 
     void CreateNode(BreadboardSocket[] sockets, int start, int end)
@@ -45,14 +101,27 @@ public class BreadboardLogic : MonoBehaviour
         }
 
         nodes.Add(node);
+    }
 
-        Color color = Random.ColorHSV();
+/*
+    void OnDrawGizmos()
+    {
+        if (nodes == null || nodes.Count == 0) return;
 
-        foreach (var socket in node.sockets)
+        foreach (var node in nodes)
         {
-            Renderer r = socket.GetComponentInChildren<Renderer>();
-            if (r != null)
-                r.material.color = color;
+            if (node.sockets.Count == 0) continue;
+
+            Gizmos.color = Color.yellow;
+
+            Vector3 center = node.sockets[0].transform.position;
+
+            foreach (var socket in node.sockets)
+            {
+                Gizmos.DrawSphere(socket.transform.position, 0.004f);
+                Gizmos.DrawLine(center, socket.transform.position);
+            }
         }
     }
+*/
 }
