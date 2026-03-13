@@ -78,18 +78,26 @@ public class CircuitSolver : MonoBehaviour
     {
         _nodes.Clear();
 
-        // Gather every node touched by a connected battery or resistor
         foreach (var bat in _batteries)
         {
+            Debug.Log($"[Solver] Battery - PositiveNode: {(bat.PositiveNode != null ? "OK" : "NULL")}, NegativeNode: {(bat.NegativeNode != null ? "OK" : "NULL")}");
             AddNodeIfConnected(bat.PositiveNode);
             AddNodeIfConnected(bat.NegativeNode);
         }
 
         foreach (var res in _resistors)
         {
+            Debug.Log($"[Solver] Resistor - NodeA: {(res.NodeA != null ? "OK" : "NULL")}, NodeB: {(res.NodeB != null ? "OK" : "NULL")}, OhmsValue: {res.OhmsValue}");
             AddNodeIfConnected(res.NodeA);
             AddNodeIfConnected(res.NodeB);
         }
+
+        foreach (var node in _nodes)
+        {
+            Debug.Log($"[Solver] Node isVoltageSource: {node.isVoltageSource}, sourceVoltage: {node.sourceVoltage}");
+        }
+
+        Debug.Log($"[Solver] Total nodes collected: {_nodes.Count}, Batteries: {_batteries.Count}, Resistors: {_resistors.Count}");
     }
 
     void AddNodeIfConnected(BreadboardNode node)
@@ -126,6 +134,20 @@ public class CircuitSolver : MonoBehaviour
             G[b, a] -= g;
         }
 
+        foreach (var res in _resistors)
+        {
+            if (res.NodeA == null || res.NodeB == null) continue;
+            if (res.OhmsValue <= 0f) continue;
+
+            int a = _nodes.IndexOf(res.NodeA);
+            int b = _nodes.IndexOf(res.NodeB);
+
+            Debug.Log($"[Solver] Stamping resistor {res.OhmsValue}Ω between node {a} and node {b}");
+
+            if (a < 0 || b < 0) continue;
+            // ... rest of stamping
+        }
+
         // ── Stamp voltage sources (batteries) via node fixing ────────
         // For each voltage-source node, replace its row with a fixed-voltage equation.
         foreach (var node in _nodes)
@@ -146,6 +168,9 @@ public class CircuitSolver : MonoBehaviour
         // ── Floating nodes (nothing connected) get 0V ────────────────
         for (int i = 0; i < n; i++)
         {
+            // Skip voltage source rows — already handled above
+            if (_nodes[i].isVoltageSource) continue;
+
             bool allZero = true;
             for (int j = 0; j < n; j++)
                 if (G[i, j] != 0f) { allZero = false; break; }
@@ -153,7 +178,7 @@ public class CircuitSolver : MonoBehaviour
             if (allZero)
             {
                 G[i, i] = 1f;
-                I[i]    = 0f;
+                I[i] = 0f;
             }
         }
 

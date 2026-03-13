@@ -28,10 +28,13 @@ public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
     private BreadboardSocket _socketA;
     private BreadboardSocket _socketB;
 
+    [Header("Test Override")]
+    public BreadboardSocket testSocketA;
+    public BreadboardSocket testSocketB;
+
     void OnEnable()
     {
-        if (CircuitSolver.Instance != null)
-            CircuitSolver.Instance.RegisterComponent(this);
+       
     }
 
     void OnDisable()
@@ -45,8 +48,31 @@ public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
         DetectSockets();
     }
 
+    void Start()
+    {
+        Debug.Log($"[Resistor] Start called. Solver exists: {CircuitSolver.Instance != null}");
+        if (CircuitSolver.Instance != null)
+            CircuitSolver.Instance.RegisterComponent(this);
+        else
+            Debug.LogError("[Resistor] CircuitSolver.Instance is null in Start! Check execution order.");
+    }
+
     void DetectSockets()
     {
+        // Test override
+        if (testSocketA != null && testSocketB != null)
+        {
+            if (NodeA == null || NodeB == null)
+            {
+                _socketA = testSocketA;
+                _socketB = testSocketB;
+                NodeA = _socketA.node;
+                NodeB = _socketB.node;
+            }
+            return;
+        }
+
+        // Physics detection
         BreadboardSocket newA = FindNearestSocket(legATip);
         BreadboardSocket newB = FindNearestSocket(legBTip);
 
@@ -54,13 +80,8 @@ public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
         {
             _socketA = newA;
             _socketB = newB;
-
             NodeA = _socketA?.node;
             NodeB = _socketB?.node;
-
-            if (showDebugInfo)
-                Debug.Log($"[Resistor {OhmsValue}Ω] A: {(NodeA != null ? "connected" : "none")}, " +
-                          $"B: {(NodeB != null ? "connected" : "none")}");
         }
     }
 

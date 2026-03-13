@@ -43,13 +43,22 @@ public class BatteryComponent : MonoBehaviour
 
     void DetectSocketConnections()
     {
+        // If sockets are manually assigned in the Inspector, skip physics detection
+        if (positiveSocket != null && negativeSocket != null)
+        {
+            // Connect once if not already connected
+            if (PositiveNode == null || NegativeNode == null)
+                Connect();
+            return;
+        }
+
+        // Otherwise use physics overlap detection
         BreadboardSocket newPos = FindNearestSocket(positiveLegTip);
         BreadboardSocket newNeg = FindNearestSocket(negativeLegTip);
 
         if (newPos != positiveSocket || newNeg != negativeSocket)
         {
             Disconnect();
-
             positiveSocket = newPos;
             negativeSocket = newNeg;
 
