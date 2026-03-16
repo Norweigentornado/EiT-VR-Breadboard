@@ -48,8 +48,8 @@ public class ComponentSnapper : MonoBehaviour
     void OnGrabbed(SelectEnterEventArgs args)
     {
         _isHeld = true;
-        _isSnapped = false; // picking it up un-snaps it
-        _rotationWhenGrabbed = transform.rotation; // save rotation at grab time
+        _isSnapped = false;
+        _rotationWhenGrabbed = transform.rotation;
     }
 
     void OnReleased(SelectExitEventArgs args)
@@ -82,40 +82,39 @@ public class ComponentSnapper : MonoBehaviour
 
     void TrySnap()
     {
-        // Check every leg has a socket candidate in snap range
         foreach (var leg in legs)
         {
             if (FindNearest(leg.tip, snapRadius) == null)
                 return;
         }
 
-        // Compute average position offset from all legs to their nearest sockets
-        Vector3 totalOffset = Vector3.zero;
+        Vector3 totalTargetPosition = Vector3.zero;
 
         foreach (var leg in legs)
         {
             BreadboardSocket target = FindNearest(leg.tip, snapRadius);
-
-            // Guard against null or NaN socket positions
             if (target == null) return;
-            Vector3 offset = target.transform.position - leg.tip.position;
-            if (float.IsNaN(offset.x) || float.IsNaN(offset.y) || float.IsNaN(offset.z)) return;
 
-            totalOffset += offset;
+            Transform attachChild = target.transform.Find("Attach");
+            Vector3 socketPoint = attachChild != null ? attachChild.position : target.transform.position;
+
+            // Where should the root be so THIS leg tip sits at the socket point?
+            Vector3 rootTarget = socketPoint + (transform.position - leg.tip.position);
+
+            if (float.IsNaN(rootTarget.x) || float.IsNaN(rootTarget.y) || float.IsNaN(rootTarget.z)) return;
+
+            totalTargetPosition += rootTarget;
         }
 
-        Vector3 averageOffset = totalOffset / legs.Count;
+        Vector3 averageTarget = totalTargetPosition / legs.Count;
 
-        // Final NaN guard before applying
-        if (float.IsNaN(averageOffset.x) || float.IsNaN(averageOffset.y) || float.IsNaN(averageOffset.z))
+        if (float.IsNaN(averageTarget.x) || float.IsNaN(averageTarget.y) || float.IsNaN(averageTarget.z))
         {
-            Debug.LogWarning($"[ComponentSnapper] NaN offset detected on '{gameObject.name}', aborting snap.");
+            Debug.LogWarning($"[ComponentSnapper] NaN position detected on '{gameObject.name}', aborting snap.");
             return;
         }
 
-        transform.position += averageOffset;
-
-        // Restore the rotation the player had when holding the object
+        transform.position = averageTarget;
         transform.rotation = _rotationWhenGrabbed;
 
         _isSnapped = true;
