@@ -8,22 +8,32 @@ public class CableRightAngleHybridTube : MonoBehaviour
     public Transform endA;
     public Transform endB;
 
+    [Header("Pins")]
+    public Transform pinA;
+    public Transform pinB;
+    public float pinDiameter = 0.001f;
+    public float pinLength = 0.006f;
+    public float pinLengthScale = 1f;
+
     [Header("Shape")]
     public Vector3 boardNormal = Vector3.up;
-    public float liftHeight = 0.01f;        // 10 mm above board
-    public float bendRadius = 0.004f;       // 4 mm
+    public float liftHeight = 0.01f;
+    public float bendRadius = 0.004f;
     [Range(6, 64)]
-    public int bendSamples = 24;            // points along the bend curve (smoothness)
+    public int bendSamples = 24;
 
     [Header("Tube quality")]
     [Range(6, 32)]
-    public int tubeSides = 12;              // roundness of tube cross-section
+    public int tubeSides = 12;
 
     [Header("Thickness")]
-    public float wireDiameter = 0.002f;     // 2 mm
+    public float wireDiameter = 0.002f;
+
+    [Header("Global Scale")]
+    public float cableScale = 1f;
 
     [Header("Material")]
-    public Material wireMaterial;           // red plastic
+    public Material wireMaterial;
 
     [Header("Bezier")]
     [Tooltip("0.55228475 approximates a quarter circle well.")]
@@ -44,57 +54,88 @@ public class CableRightAngleHybridTube : MonoBehaviour
         if (!endA || !endB) return;
         EnsureParts();
 
+        float scaledLift = liftHeight * cableScale;
+        float scaledBend = bendRadius * cableScale;
+        float scaledWire = wireDiameter * cableScale;
+        float scaledPinDiameter = pinDiameter * cableScale;
+        float scaledPinLength = pinLength * cableScale * pinLengthScale;
+
+        ScalePin(pinA, scaledPinDiameter, scaledPinLength);
+        ScalePin(pinB, scaledPinDiameter, scaledPinLength);
+
         Vector3 up = boardNormal.sqrMagnitude < 1e-6f ? Vector3.up : boardNormal.normalized;
 
         Vector3 a = endA.position;
         Vector3 b = endB.position;
 
-        Vector3 aUp = a + up * liftHeight;
-        Vector3 bUp = b + up * liftHeight;
+        Vector3 aUp = a + up * scaledLift;
+        Vector3 bUp = b + up * scaledLift;
 
         Vector3 across = bUp - aUp;
         float acrossLen = across.magnitude;
         if (acrossLen < 1e-5f) return;
         Vector3 acrossDir = across / acrossLen;
 
-        float r = Mathf.Max(0f, bendRadius);
-        r = Mathf.Min(r, liftHeight * 0.95f);
+        float r = Mathf.Max(0f, scaledBend);
+        r = Mathf.Min(r, scaledLift * 0.95f);
         r = Mathf.Min(r, acrossLen * 0.45f);
 
-        float radius = wireDiameter * 0.5f;
+        float radius = scaledWire * 0.5f;
 
         if (r <= 1e-6f)
         {
-            // Hard corner fallback (no bends)
-            SetCylinderBetween(_straightUpA, a, aUp, wireDiameter);
-            SetCylinderBetween(_straightAcross, aUp, bUp, wireDiameter);
-            SetCylinderBetween(_straightDownB, bUp, b, wireDiameter);
+            SetCylinderBetween(_straightUpA, a, aUp, scaledWire);
+            SetCylinderBetween(_straightAcross, aUp, bUp, scaledWire);
+            SetCylinderBetween(_straightDownB, bUp, b, scaledWire);
 
             SetBendActive(false);
             return;
         }
 
-        // Tangency points
-        Vector3 aVertEnd     = aUp - up * r;
+        Vector3 aVertEnd = aUp - up * r;
         Vector3 aAcrossStart = aUp + acrossDir * r;
 
-        Vector3 bAcrossEnd   = bUp - acrossDir * r;
-        Vector3 bVertStart   = bUp - up * r;
+        Vector3 bAcrossEnd = bUp - acrossDir * r;
+        Vector3 bVertStart = bUp - up * r;
 
-        // Straight cylinders (true round)
-        SetCylinderBetween(_straightUpA, a, aVertEnd, wireDiameter);
-        SetCylinderBetween(_straightAcross, aAcrossStart, bAcrossEnd, wireDiameter);
-        SetCylinderBetween(_straightDownB, bVertStart, b, wireDiameter);
+        SetCylinderBetween(_straightUpA, a, aVertEnd, scaledWire);
+        SetCylinderBetween(_straightAcross, aAcrossStart, bAcrossEnd, scaledWire);
+        SetCylinderBetween(_straightDownB, bVertStart, b, scaledWire);
 
         SetBendActive(true);
 
-        // Build bend A tube mesh
         BuildBezierPoints(_tmp, aVertEnd, aAcrossStart, t0: up, t3: acrossDir, radius: r, samples: bendSamples);
-        GenerateTubeMesh(_bendAFilter.sharedMesh, _tmp, radius, tubeSides, boardNormal);
+        ConvertPointsToLocal(_tmp, transform);
+        GenerateTubeMesh(
+            _bendAFilter.sharedMesh,
+            _tmp,
+            radius,
+            tubeSides,
+            transform.InverseTransformDirection(boardNormal).normalized
+        );
 
-        // Build bend B tube mesh
         BuildBezierPoints(_tmp, bAcrossEnd, bVertStart, t0: acrossDir, t3: -up, radius: r, samples: bendSamples);
-        GenerateTubeMesh(_bendBFilter.sharedMesh, _tmp, radius, tubeSides, boardNormal);
+        ConvertPointsToLocal(_tmp, transform);
+        GenerateTubeMesh(
+            _bendBFilter.sharedMesh,
+            _tmp,
+            radius,
+            tubeSides,
+            transform.InverseTransformDirection(boardNormal).normalized
+        );
+    }
+
+    void ScalePin(Transform pin, float diameter, float length)
+    {
+        if (!pin) return;
+
+        // Only scale the pin mesh. Do NOT move it.
+        // This assumes the pin has already been positioned correctly in the prefab.
+        Vector3 s = pin.localScale;
+        s.x = diameter;
+        s.y = length * 0.5f;
+        s.z = diameter;
+        pin.localScale = s;
     }
 
     void SetBendActive(bool on)
@@ -144,7 +185,10 @@ public class CableRightAngleHybridTube : MonoBehaviour
 
             t = go.transform;
         }
-        else go = t.gameObject;
+        else
+        {
+            go = t.gameObject;
+        }
 
         var rend = go.GetComponent<Renderer>();
         if (rend && wireMaterial) rend.sharedMaterial = wireMaterial;
@@ -162,7 +206,14 @@ public class CableRightAngleHybridTube : MonoBehaviour
             go = new GameObject(name);
             go.transform.SetParent(_partsRoot, false);
         }
-        else go = t.gameObject;
+        else
+        {
+            go = t.gameObject;
+        }
+
+        go.transform.localPosition = Vector3.zero;
+        go.transform.localRotation = Quaternion.identity;
+        go.transform.localScale = Vector3.one;
 
         mf = go.GetComponent<MeshFilter>();
         if (!mf) mf = go.AddComponent<MeshFilter>();
@@ -178,8 +229,6 @@ public class CableRightAngleHybridTube : MonoBehaviour
             mf.sharedMesh = mesh;
         }
     }
-
-    // ---------- Geometry helpers ----------
 
     static void SetCylinderBetween(Transform cyl, Vector3 p0, Vector3 p1, float diameter)
     {
@@ -216,7 +265,7 @@ public class CableRightAngleHybridTube : MonoBehaviour
         int n = Mathf.Max(4, samples);
         for (int i = 0; i < n; i++)
         {
-            float t = (n == 1) ? 1f : i / (float)(n - 1);
+            float t = i / (float)(n - 1);
             pts.Add(Cubic(p0, p1, p2, p3, t));
         }
     }
@@ -230,14 +279,20 @@ public class CableRightAngleHybridTube : MonoBehaviour
              + (t * t * t) * p3;
     }
 
-    /// <summary>
-    /// Generates a tube mesh along a centerline.
-    /// Uses a stable frame guided by "upGuide" (board normal) to avoid twisting.
-    /// </summary>
+    static void ConvertPointsToLocal(List<Vector3> points, Transform root)
+    {
+        for (int i = 0; i < points.Count; i++)
+            points[i] = root.InverseTransformPoint(points[i]);
+    }
+
     static void GenerateTubeMesh(Mesh mesh, List<Vector3> centerline, float radius, int sides, Vector3 upGuide)
     {
         int n = centerline.Count;
-        if (n < 2) { mesh.Clear(); return; }
+        if (n < 2)
+        {
+            mesh.Clear();
+            return;
+        }
 
         sides = Mathf.Max(3, sides);
         upGuide = (upGuide.sqrMagnitude < 1e-6f) ? Vector3.up : upGuide.normalized;
@@ -250,7 +305,6 @@ public class CableRightAngleHybridTube : MonoBehaviour
         var uvs = new Vector2[vertCount];
         var tris = new int[triCount * 3];
 
-        // Build rings
         for (int i = 0; i < n; i++)
         {
             Vector3 p = centerline[i];
@@ -260,12 +314,9 @@ public class CableRightAngleHybridTube : MonoBehaviour
             else if (i == n - 1) tangent = (centerline[i] - centerline[i - 1]).normalized;
             else tangent = (centerline[i + 1] - centerline[i - 1]).normalized;
 
-            // Build a stable normal/binormal using upGuide
             Vector3 normal = Vector3.Cross(upGuide, tangent);
-            float nm = normal.magnitude;
-            if (nm < 1e-6f)
+            if (normal.sqrMagnitude < 1e-6f)
             {
-                // If upGuide parallel to tangent, pick any other reference
                 normal = Vector3.Cross(Vector3.right, tangent);
                 if (normal.sqrMagnitude < 1e-6f)
                     normal = Vector3.Cross(Vector3.forward, tangent);
@@ -286,7 +337,6 @@ public class CableRightAngleHybridTube : MonoBehaviour
             }
         }
 
-        // Stitch rings
         int ti = 0;
         for (int i = 0; i < n - 1; i++)
         {
@@ -303,8 +353,8 @@ public class CableRightAngleHybridTube : MonoBehaviour
                 int c = ring1 + s1;
                 int d = ring0 + s1;
 
-                tris[ti++] = a; tris[ti++] = b; tris[ti++] = c;
-                tris[ti++] = a; tris[ti++] = c; tris[ti++] = d;
+                tris[ti++] = a; tris[ti++] = c; tris[ti++] = b;
+                tris[ti++] = a; tris[ti++] = d; tris[ti++] = c;
             }
         }
 

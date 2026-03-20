@@ -1,5 +1,7 @@
-using UnityEngine;
 using System.Collections.Generic;
+using System.Net.Sockets;
+using System.Text.RegularExpressions;
+using UnityEngine;
 
 public class BreadboardLogic : MonoBehaviour
 {
@@ -7,121 +9,151 @@ public class BreadboardLogic : MonoBehaviour
 
     void Awake()
     {
-        BuildBreadboard();
+        
     }
 
-    void BuildBreadboard(){
+    void Start()
+    {
+        BuildBreadboard();
+        DebugPowerRails();
+    }
+
+    // Sort by the number in the GameObject name, e.g. "Socket (3)" → 3, "Socket" → 0
+    BreadboardSocket[] GetSortedSockets(Transform row)
+    {
+        // Only get sockets that are DIRECT children of the row, not grandchildren
+        List<BreadboardSocket> sockets = new List<BreadboardSocket>();
+        foreach (Transform child in row)
+        {
+            BreadboardSocket socket = child.GetComponent<BreadboardSocket>();
+            if (socket != null)
+                sockets.Add(socket);
+        }
+
+        sockets.Sort((a, b) =>
+        {
+            int numA = ExtractNumber(a.name);
+            int numB = ExtractNumber(b.name);
+            return numA.CompareTo(numB);
+        });
+
+        return sockets.ToArray();
+    }
+
+    int ExtractNumber(string name)
+    {
+        var match = Regex.Match(name, @"\((\d+)\)");
+        return match.Success ? int.Parse(match.Groups[1].Value) : 0;
+    }
+
+    void BuildBreadboard()
+    {
         foreach (Transform row in transform)
         {
-            if (!row.name.Contains("Row"))
-                continue;
+            if (!row.name.Contains("Row")) continue;
 
-            BreadboardSocket[] sockets = row.GetComponentsInChildren<BreadboardSocket>();
-
-            if (sockets.Length < 14)
-                continue;
-
-            // Sort sockets left → right
-            System.Array.Sort(sockets, (a, b) =>
-                a.transform.position.x.CompareTo(b.transform.position.x));
+            BreadboardSocket[] sockets = GetSortedSockets(row);
+            if (sockets.Length < 14) continue;
 
             /*
-            Typical order on your board:
+             * After sorting by name number:
+             *  "Socket"     → 0  = left GND
+             *  "Socket (1)" → 1  = left VCC
+             *  "Socket (2)" → 2  \
+             *  ...                  j–f
+             *  "Socket (6)" → 6  /
+             *  "Socket (7)" → 7  \
+             *  ...                  e–a
+             *  "Socket (11)"→ 11 /
+             *  "Socket (12)"→ 12 = right GND
+             *  "Socket (13)"→ 13 = right VCC
+             */
 
-            0  = left power -
-            1  = left power +
-
-            2-6   = A B C D E
-            7-11  = F G H I J
-
-            12 = right power +
-            13 = right power -
-            */
-
-            CreateNode(sockets, 2, 6);   // A-E
-            CreateNode(sockets, 7, 11);  // F-J
-
-            Debug.Log("Built row nodes for " + row.name);
+            CreateNode(sockets, 2, 6);   // j-f
+            CreateNode(sockets, 7, 11);  // e-a
         }
 
         BuildPowerRails();
     }
 
-    void BuildPowerRails(){
-        List<BreadboardSocket> leftPlus = new List<BreadboardSocket>();
-        List<BreadboardSocket> leftMinus = new List<BreadboardSocket>();
-
-        List<BreadboardSocket> rightPlus = new List<BreadboardSocket>();
-        List<BreadboardSocket> rightMinus = new List<BreadboardSocket>();
+    void BuildPowerRails()
+    {
+        var leftGND = new List<BreadboardSocket>();
+        var leftVCC = new List<BreadboardSocket>();
+        var rightGND = new List<BreadboardSocket>();
+        var rightVCC = new List<BreadboardSocket>();
 
         foreach (Transform row in transform)
         {
-            if (!row.name.Contains("Row"))
-                continue;
+            if (!row.name.Contains("Row")) continue;
 
-            BreadboardSocket[] sockets = row.GetComponentsInChildren<BreadboardSocket>();
+            BreadboardSocket[] sockets = GetSortedSockets(row);
+            if (sockets.Length < 14) continue;
 
-            System.Array.Sort(sockets, (a, b) =>
-                a.transform.position.x.CompareTo(b.transform.position.x));
-
-            leftMinus.Add(sockets[0]);
-            leftPlus.Add(sockets[1]);
-
-            rightPlus.Add(sockets[12]);
-            rightMinus.Add(sockets[13]);
+            leftGND.Add(sockets[0]);   // "Socket"      → GND
+            leftVCC.Add(sockets[1]);   // "Socket (1)"  → VCC
+            rightGND.Add(sockets[12]); // "Socket (12)" → GND
+            rightVCC.Add(sockets[13]); // "Socket (13)" → VCC
         }
 
-        CreateVerticalNode(leftMinus);
-        CreateVerticalNode(leftPlus);
-        CreateVerticalNode(rightPlus);
-        CreateVerticalNode(rightMinus);
+        CreatePowerRailNode(leftGND, isPositive: false);  // 0 V
+        CreatePowerRailNode(leftVCC, isPositive: true);   // 5 V
+        CreatePowerRailNode(rightGND, isPositive: false);  // 0 V
+        CreatePowerRailNode(rightVCC, isPositive: true);   // 5 V
     }
 
-    void CreateVerticalNode(List<BreadboardSocket> sockets)
+    void CreatePowerRailNode(List<BreadboardSocket> sockets, bool isPositive)
     {
-        BreadboardNode node = new BreadboardNode();
+        var node = new BreadboardNode();
+        node.isVoltageSource = true;
+        node.sourceVoltage = isPositive ? 5f : 0f;
 
         foreach (var socket in sockets)
         {
             socket.node = node;
             node.sockets.Add(socket);
         }
-
         nodes.Add(node);
+
+        // Register with solver so it's always included in the solve
+        if (CircuitSolver.Instance != null)
+            CircuitSolver.Instance.RegisterFixedNode(node);
     }
 
     void CreateNode(BreadboardSocket[] sockets, int start, int end)
     {
-        BreadboardNode node = new BreadboardNode();
-
+        var node = new BreadboardNode();
         for (int i = start; i <= end; i++)
         {
             sockets[i].node = node;
             node.sockets.Add(sockets[i]);
         }
-
         nodes.Add(node);
     }
 
-/*
-    void OnDrawGizmos()
+    void DebugPowerRails()
     {
-        if (nodes == null || nodes.Count == 0) return;
-
-        foreach (var node in nodes)
+        Debug.Log("=== POWER RAIL DEBUG ===");
+        foreach (Transform row in transform)
         {
-            if (node.sockets.Count == 0) continue;
+            if (!row.name.Contains("Row")) continue;
 
-            Gizmos.color = Color.yellow;
+            BreadboardSocket[] sockets = GetSortedSockets(row);
 
-            Vector3 center = node.sockets[0].transform.position;
-
-            foreach (var socket in node.sockets)
+            Debug.Log($"[{row.name}] Total sockets found: {sockets.Length}");
+            for (int i = 0; i < sockets.Length; i++)
             {
-                Gizmos.DrawSphere(socket.transform.position, 0.004f);
-                Gizmos.DrawLine(center, socket.transform.position);
+                var s = sockets[i];
+                Debug.Log($"  [{i}] name='{s.name}' " +
+                          $"extractedNum={ExtractNumber(s.name)} " +
+                          $"pos={s.transform.position} " +
+                          $"node={(s.node != null ? "OK" : "NULL")} " +
+                          $"isVS={s.node?.isVoltageSource} V={s.node?.sourceVoltage}");
             }
+
+            // Only log one row — we just need to see the pattern
+            break;
         }
+        Debug.Log("=== END POWER RAIL DEBUG ===");
     }
-*/
 }

@@ -15,8 +15,14 @@ public class SocketHoverHighlight : MonoBehaviour
     {
         socket = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
         socketRenderer = GetComponentInChildren<Renderer>();
-        propBlock = new MaterialPropertyBlock();
 
+        if (socketRenderer == null)
+        {
+            Debug.LogError($"No Renderer found on {gameObject.name} or its children!", gameObject);
+            return; // Stop here to avoid further null errors
+        }
+
+        propBlock = new MaterialPropertyBlock();
         socket.hoverEntered.AddListener(OnHoverEnter);
         socket.hoverExited.AddListener(OnHoverExit);
     }
