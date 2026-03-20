@@ -9,11 +9,12 @@ public class BreadboardLogic : MonoBehaviour
 
     void Awake()
     {
-        BuildBreadboard();
+        
     }
 
     void Start()
     {
+        BuildBreadboard();
         DebugPowerRails();
     }
 
@@ -113,6 +114,10 @@ public class BreadboardLogic : MonoBehaviour
             node.sockets.Add(socket);
         }
         nodes.Add(node);
+
+        // Register with solver so it's always included in the solve
+        if (CircuitSolver.Instance != null)
+            CircuitSolver.Instance.RegisterFixedNode(node);
     }
 
     void CreateNode(BreadboardSocket[] sockets, int start, int end)

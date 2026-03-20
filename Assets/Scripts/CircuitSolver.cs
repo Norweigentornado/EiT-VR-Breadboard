@@ -10,6 +10,11 @@ public class CircuitSolver : MonoBehaviour
 
     private readonly List<BreadboardNode> _nodes = new();
     private readonly List<ITwoTerminalComponent> _resistors = new();
+    private readonly List<BreadboardNode> _fixedNodes = new();
+
+    // Track last state to avoid spamming logs
+    private int _lastNodeCount = -1;
+    private int _lastResistorCount = -1;
 
     void Awake()
     {
@@ -25,39 +30,41 @@ public class CircuitSolver : MonoBehaviour
     void LateUpdate()
     {
         RebuildNodeList();
-        if (_nodes.Count == 0)
-        {
-            Debug.LogWarning("[CircuitSolver] No nodes found!");
-            return;
-        }
-
-        // Add this block:
-        int vsCount = 0;
-        foreach (var node in _nodes)
-            if (node.isVoltageSource) vsCount++;
-        if (vsCount == 0)
-            Debug.LogWarning("[CircuitSolver] No voltage source nodes found — power rails may not be registered!");
-
+        if (_nodes.Count == 0) return;
         Solve();
+        LogCircuitStatusIfChanged();
     }
 
-    // ── Registration ─────────────────────────────────────────────────
+    public void RegisterFixedNode(BreadboardNode node)
+    {
+        if (!_fixedNodes.Contains(node))
+        {
+            _fixedNodes.Add(node);
+            Debug.Log($"[CircuitSolver] Power rail registered: {(node.sourceVoltage > 0 ? node.sourceVoltage + "V (VCC)" : "0V (GND)")}");
+        }
+    }
 
     public void RegisterComponent(ITwoTerminalComponent r)
     {
-        if (!_resistors.Contains(r)) _resistors.Add(r);
+        if (!_resistors.Contains(r))
+        {
+            _resistors.Add(r);
+            Debug.Log($"[CircuitSolver] Component registered: {r.GetType().Name} ({r.OhmsValue}Ω)");
+        }
     }
 
     public void UnregisterComponent(ITwoTerminalComponent r)
     {
-        _resistors.Remove(r);
+        if (_resistors.Remove(r))
+            Debug.Log($"[CircuitSolver] Component unregistered: {r.GetType().Name}");
     }
-
-    // ── Node collection ───────────────────────────────────────────────
 
     void RebuildNodeList()
     {
         _nodes.Clear();
+
+        foreach (var node in _fixedNodes)
+            _nodes.Add(node);
 
         foreach (var res in _resistors)
         {
@@ -72,7 +79,34 @@ public class CircuitSolver : MonoBehaviour
             _nodes.Add(node);
     }
 
-    // ── MNA Solver ────────────────────────────────────────────────────
+    // Only logs when something changes — not every frame
+    void LogCircuitStatusIfChanged()
+    {
+        if (_nodes.Count == _lastNodeCount && _resistors.Count == _lastResistorCount)
+            return;
+
+        _lastNodeCount = _nodes.Count;
+        _lastResistorCount = _resistors.Count;
+
+        Debug.Log($"[CircuitSolver] Circuit changed — Nodes: {_nodes.Count}, Components: {_resistors.Count}");
+
+        // Check each component is properly connected
+        foreach (var res in _resistors)
+        {
+            bool aOk = res.NodeA != null;
+            bool bOk = res.NodeB != null;
+            bool complete = aOk && bOk;
+
+            Debug.Log($"  {res.GetType().Name} ({res.OhmsValue}Ω) — " +
+                      $"NodeA: {(aOk ? $"{res.NodeA.solvedVoltage:F2}V" : "NOT CONNECTED")} | " +
+                      $"NodeB: {(bOk ? $"{res.NodeB.solvedVoltage:F2}V" : "NOT CONNECTED")} | " +
+                      $"{(complete ? "COMPLETE" : "INCOMPLETE")}");
+        }
+
+        // Log power rail voltages
+        foreach (var node in _fixedNodes)
+            Debug.Log($"  Rail: {node.sourceVoltage}V → solvedVoltage={node.solvedVoltage:F2}V");
+    }
 
     void Solve()
     {
@@ -80,7 +114,6 @@ public class CircuitSolver : MonoBehaviour
         float[,] G = new float[n, n];
         float[] I = new float[n];
 
-        // Stamp resistors
         foreach (var res in _resistors)
         {
             if (res.NodeA == null || res.NodeB == null) continue;
@@ -97,17 +130,14 @@ public class CircuitSolver : MonoBehaviour
             G[b, a] -= g;
         }
 
-        // Fix voltage-source rows (power rails)
         for (int i = 0; i < n; i++)
         {
             if (!_nodes[i].isVoltageSource) continue;
-
             for (int j = 0; j < n; j++) G[i, j] = 0f;
             G[i, i] = 1f;
             I[i] = _nodes[i].sourceVoltage;
         }
 
-        // Floating nodes → 0 V
         for (int i = 0; i < n; i++)
         {
             if (_nodes[i].isVoltageSource) continue;
@@ -132,8 +162,6 @@ public class CircuitSolver : MonoBehaviour
                 Debug.Log($"[CircuitSolver] Node {i}: {result[i]:F3}V");
         }
     }
-
-    // ── Gaussian elimination with partial pivoting ────────────────────
 
     static float[] GaussianElimination(float[,] A, float[] b, int n)
     {
@@ -181,6 +209,4 @@ public class CircuitSolver : MonoBehaviour
 
         return x;
     }
-
-
 }
