@@ -1,17 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Place ONE of these anywhere in your scene (e.g. on the Breadboard GameObject).
-/// 
-/// Every frame it:
-///   1. Collects all registered nodes, resistors, voltage sources
-///   2. Builds a conductance matrix (Modified Nodal Analysis)
-///   3. Solves the linear system with Gaussian elimination
-///   4. Writes the result back to each BreadboardNode.solvedVoltage
-/// 
-/// Components register/unregister themselves — nothing needs to be wired manually.
-/// </summary>
 public class CircuitSolver : MonoBehaviour
 {
     public static CircuitSolver Instance { get; private set; }
@@ -19,20 +8,12 @@ public class CircuitSolver : MonoBehaviour
     [Header("Debug")]
     public bool logSolverOutput = false;
 
-    // ── Registered components ────────────────────────────────────────
-    private readonly List<BreadboardNode>     _nodes     = new();
+    private readonly List<BreadboardNode> _nodes = new();
     private readonly List<ITwoTerminalComponent> _resistors = new();
-    private readonly List<BatteryComponent>   _batteries = new();
-
-    // ── Unity lifecycle ──────────────────────────────────────────────
 
     void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
     }
 
@@ -43,24 +24,24 @@ public class CircuitSolver : MonoBehaviour
 
     void LateUpdate()
     {
-        // Collect current node set from all batteries and resistors
         RebuildNodeList();
-        if (_nodes.Count == 0) return;
+        if (_nodes.Count == 0)
+        {
+            Debug.LogWarning("[CircuitSolver] No nodes found!");
+            return;
+        }
+
+        // Add this block:
+        int vsCount = 0;
+        foreach (var node in _nodes)
+            if (node.isVoltageSource) vsCount++;
+        if (vsCount == 0)
+            Debug.LogWarning("[CircuitSolver] No voltage source nodes found — power rails may not be registered!");
 
         Solve();
     }
 
-    // ── Registration API (called by components themselves) ───────────
-
-    public void RegisterBattery(BatteryComponent b)
-    {
-        if (!_batteries.Contains(b)) _batteries.Add(b);
-    }
-
-    public void UnregisterBattery(BatteryComponent b)
-    {
-        _batteries.Remove(b);
-    }
+    // ── Registration ─────────────────────────────────────────────────
 
     public void RegisterComponent(ITwoTerminalComponent r)
     {
@@ -72,51 +53,34 @@ public class CircuitSolver : MonoBehaviour
         _resistors.Remove(r);
     }
 
-    // ── Node collection ──────────────────────────────────────────────
+    // ── Node collection ───────────────────────────────────────────────
 
     void RebuildNodeList()
     {
         _nodes.Clear();
 
-        foreach (var bat in _batteries)
-        {
-            Debug.Log($"[Solver] Battery - PositiveNode: {(bat.PositiveNode != null ? "OK" : "NULL")}, NegativeNode: {(bat.NegativeNode != null ? "OK" : "NULL")}");
-            AddNodeIfConnected(bat.PositiveNode);
-            AddNodeIfConnected(bat.NegativeNode);
-        }
-
         foreach (var res in _resistors)
         {
-            Debug.Log($"[Solver] Resistor - NodeA: {(res.NodeA != null ? "OK" : "NULL")}, NodeB: {(res.NodeB != null ? "OK" : "NULL")}, OhmsValue: {res.OhmsValue}");
-            AddNodeIfConnected(res.NodeA);
-            AddNodeIfConnected(res.NodeB);
+            AddNode(res.NodeA);
+            AddNode(res.NodeB);
         }
-
-        foreach (var node in _nodes)
-        {
-            Debug.Log($"[Solver] Node isVoltageSource: {node.isVoltageSource}, sourceVoltage: {node.sourceVoltage}");
-        }
-
-        Debug.Log($"[Solver] Total nodes collected: {_nodes.Count}, Batteries: {_batteries.Count}, Resistors: {_resistors.Count}");
     }
 
-    void AddNodeIfConnected(BreadboardNode node)
+    void AddNode(BreadboardNode node)
     {
         if (node != null && !_nodes.Contains(node))
             _nodes.Add(node);
     }
 
-    // ── MNA Solver ───────────────────────────────────────────────────
+    // ── MNA Solver ────────────────────────────────────────────────────
 
     void Solve()
     {
         int n = _nodes.Count;
-
-        // G matrix (conductance) and I vector (current injections)
         float[,] G = new float[n, n];
-        float[]  I = new float[n];
+        float[] I = new float[n];
 
-        // ── Stamp resistors ──────────────────────────────────────────
+        // Stamp resistors
         foreach (var res in _resistors)
         {
             if (res.NodeA == null || res.NodeB == null) continue;
@@ -127,62 +91,32 @@ public class CircuitSolver : MonoBehaviour
             if (a < 0 || b < 0) continue;
 
             float g = 1f / res.OhmsValue;
-
             G[a, a] += g;
             G[b, b] += g;
             G[a, b] -= g;
             G[b, a] -= g;
         }
 
-        foreach (var res in _resistors)
-        {
-            if (res.NodeA == null || res.NodeB == null) continue;
-            if (res.OhmsValue <= 0f) continue;
-
-            int a = _nodes.IndexOf(res.NodeA);
-            int b = _nodes.IndexOf(res.NodeB);
-
-            Debug.Log($"[Solver] Stamping resistor {res.OhmsValue}Ω between node {a} and node {b}");
-
-            if (a < 0 || b < 0) continue;
-            // ... rest of stamping
-        }
-
-        // ── Stamp voltage sources (batteries) via node fixing ────────
-        // For each voltage-source node, replace its row with a fixed-voltage equation.
-        foreach (var node in _nodes)
-        {
-            if (!node.isVoltageSource) continue;
-
-            int i = _nodes.IndexOf(node);
-            if (i < 0) continue;
-
-            // Zero the row, set diagonal to 1, RHS to known voltage
-            for (int j = 0; j < n; j++)
-                G[i, j] = 0f;
-
-            G[i, i] = 1f;
-            I[i]    = node.sourceVoltage;
-        }
-
-        // ── Floating nodes (nothing connected) get 0V ────────────────
+        // Fix voltage-source rows (power rails)
         for (int i = 0; i < n; i++)
         {
-            // Skip voltage source rows — already handled above
-            if (_nodes[i].isVoltageSource) continue;
+            if (!_nodes[i].isVoltageSource) continue;
 
+            for (int j = 0; j < n; j++) G[i, j] = 0f;
+            G[i, i] = 1f;
+            I[i] = _nodes[i].sourceVoltage;
+        }
+
+        // Floating nodes → 0 V
+        for (int i = 0; i < n; i++)
+        {
+            if (_nodes[i].isVoltageSource) continue;
             bool allZero = true;
             for (int j = 0; j < n; j++)
                 if (G[i, j] != 0f) { allZero = false; break; }
-
-            if (allZero)
-            {
-                G[i, i] = 1f;
-                I[i] = 0f;
-            }
+            if (allZero) { G[i, i] = 1f; I[i] = 0f; }
         }
 
-        // ── Gaussian elimination ─────────────────────────────────────
         float[] result = GaussianElimination(G, I, n);
 
         if (result == null)
@@ -191,35 +125,27 @@ public class CircuitSolver : MonoBehaviour
             return;
         }
 
-        // ── Write back ───────────────────────────────────────────────
         for (int i = 0; i < n; i++)
         {
             _nodes[i].solvedVoltage = result[i];
-
             if (logSolverOutput)
                 Debug.Log($"[CircuitSolver] Node {i}: {result[i]:F3}V");
         }
-
-        // Any node not in the current solve gets zeroed
-        // (handles disconnected nodes left over from a previous frame)
     }
 
-    // ── Gaussian elimination with partial pivoting ───────────────────
+    // ── Gaussian elimination with partial pivoting ────────────────────
 
     static float[] GaussianElimination(float[,] A, float[] b, int n)
     {
-        // Augmented matrix
         float[,] M = new float[n, n + 1];
         for (int i = 0; i < n; i++)
         {
-            for (int j = 0; j < n; j++)
-                M[i, j] = A[i, j];
+            for (int j = 0; j < n; j++) M[i, j] = A[i, j];
             M[i, n] = b[i];
         }
 
         for (int col = 0; col < n; col++)
         {
-            // Partial pivot
             int pivot = col;
             float maxVal = Mathf.Abs(M[col, col]);
             for (int row = col + 1; row < n; row++)
@@ -231,16 +157,12 @@ public class CircuitSolver : MonoBehaviour
                 }
             }
 
-            if (maxVal < 1e-9f) return null; // singular
+            if (maxVal < 1e-9f) return null;
 
-            // Swap rows
             if (pivot != col)
-            {
                 for (int j = 0; j <= n; j++)
                     (M[col, j], M[pivot, j]) = (M[pivot, j], M[col, j]);
-            }
 
-            // Eliminate below
             for (int row = col + 1; row < n; row++)
             {
                 float factor = M[row, col] / M[col, col];
@@ -249,16 +171,16 @@ public class CircuitSolver : MonoBehaviour
             }
         }
 
-        // Back substitution
         float[] x = new float[n];
         for (int i = n - 1; i >= 0; i--)
         {
             x[i] = M[i, n];
-            for (int j = i + 1; j < n; j++)
-                x[i] -= M[i, j] * x[j];
+            for (int j = i + 1; j < n; j++) x[i] -= M[i, j] * x[j];
             x[i] /= M[i, i];
         }
 
         return x;
     }
+
+
 }
