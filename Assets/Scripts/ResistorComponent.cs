@@ -1,12 +1,5 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-/// <summary>
-/// Resistor component for the breadboard.
-/// Registers itself with CircuitSolver so its resistance is included in every solve.
-/// 
-/// Attach alongside ComponentSnapper and XRGrabInteractable.
-/// Uses the same leg-tip + OverlapSphere pattern as Battery and LED.
-/// </summary>
 public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
 {
     [Header("Resistance")]
@@ -21,7 +14,6 @@ public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
     [Header("Debug")]
     public bool showDebugInfo = false;
 
-    // The nodes this resistor currently bridges
     public BreadboardNode NodeA { get; private set; }
     public BreadboardNode NodeB { get; private set; }
 
@@ -32,10 +24,13 @@ public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
     public BreadboardSocket testSocketA;
     public BreadboardSocket testSocketB;
 
-    void OnEnable()
-    {
-       
-    }
+    private BreadboardLogic _boardLogic;
+
+    private bool _isSnapped = false;
+    private Vector3 _snappedPosition;
+    public float unSnapDistance = 0.01f;
+
+    void OnEnable() { }
 
     void OnDisable()
     {
@@ -43,18 +38,19 @@ public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
             CircuitSolver.Instance.UnregisterComponent(this);
     }
 
-    void Update()
-    {
-        DetectSockets();
-    }
-
     void Start()
     {
-        Debug.Log($"[Resistor] Start called. Solver exists: {CircuitSolver.Instance != null}");
+        _boardLogic = FindObjectOfType<BreadboardLogic>();
+
         if (CircuitSolver.Instance != null)
             CircuitSolver.Instance.RegisterComponent(this);
         else
-            Debug.LogError("[Resistor] CircuitSolver.Instance is null in Start! Check execution order.");
+            Debug.LogError("[Resistor] CircuitSolver.Instance is null in Start!");
+    }
+
+    void Update()
+    {
+        DetectSockets();
     }
 
     void DetectSockets()
@@ -68,27 +64,104 @@ public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
                 _socketB = testSocketB;
                 NodeA = _socketA.node;
                 NodeB = _socketB.node;
+
+                if (showDebugInfo)
+                    Debug.Log($"[Resistor {OhmsValue}Ω] TEST OVERRIDE — " +
+                              $"SocketA={_socketA.name} ({(NodeA != null ? $"node OK, {NodeA.solvedVoltage:F2}V" : "no node")}) | " +
+                              $"SocketB={_socketB.name} ({(NodeB != null ? $"node OK, {NodeB.solvedVoltage:F2}V" : "no node")})");
             }
             return;
         }
 
-        // Physics detection
+        // If snapped, only unlock if the component has moved significantly
+        if (_isSnapped)
+        {
+            if (Vector3.Distance(transform.position, _snappedPosition) > unSnapDistance)
+            {
+                _isSnapped = false;
+                _socketA = null;
+                _socketB = null;
+                NodeA = null;
+                NodeB = null;
+
+                if (showDebugInfo)
+                    Debug.Log($"[Resistor {OhmsValue}Ω] Unsnapped — nodes cleared");
+            }
+            return;
+        }
+
         BreadboardSocket newA = FindNearestSocket(legATip);
         BreadboardSocket newB = FindNearestSocket(legBTip);
 
-        if (newA != _socketA || newB != _socketB)
+        if (showDebugInfo)
+            Debug.Log($"[Resistor {OhmsValue}Ω] Scanning — " +
+                      $"LegA tip: {legATip?.position} hits: {(newA != null ? newA.name : "none")} | " +
+                      $"LegB tip: {legBTip?.position} hits: {(newB != null ? newB.name : "none")}");
+
+        if (newA != null && newB == null)
+        {
+            newB = InferAdjacentSocket(newA, rowOffset: 1);
+            if (showDebugInfo && newB != null)
+                Debug.Log($"[Resistor {OhmsValue}Ω] Inferred SocketB={newB.name} from SocketA");
+        }
+        else if (newB != null && newA == null)
+        {
+            newA = InferAdjacentSocket(newB, rowOffset: -1);
+            if (showDebugInfo && newA != null)
+                Debug.Log($"[Resistor {OhmsValue}Ω] Inferred SocketA={newA.name} from SocketB");
+        }
+
+        if (newA != null && newB != null)
         {
             _socketA = newA;
             _socketB = newB;
-            NodeA = _socketA?.node;
-            NodeB = _socketB?.node;
+            NodeA = _socketA.node;
+            NodeB = _socketB.node;
+            _isSnapped = true;
+            _snappedPosition = transform.position;
+
+            if (showDebugInfo)
+                Debug.Log($"[Resistor {OhmsValue}Ω] SNAPPED — " +
+                          $"SocketA={_socketA.name} ({(NodeA != null ? $"node OK, {NodeA.solvedVoltage:F2}V" : "no node")}) | " +
+                          $"SocketB={_socketB.name} ({(NodeB != null ? $"node OK, {NodeB.solvedVoltage:F2}V" : "no node")})");
         }
+    }
+
+    public void ResetSnap()
+    {
+        _isSnapped = false;
+        _socketA = null;
+        _socketB = null;
+        NodeA = null;
+        NodeB = null;
+
+        if (showDebugInfo)
+            Debug.Log($"[Resistor {OhmsValue}Ω] Snap reset externally");
+    }
+
+    BreadboardSocket InferAdjacentSocket(BreadboardSocket known, int rowOffset)
+    {
+        if (_boardLogic == null)
+        {
+            if (showDebugInfo)
+                Debug.LogWarning($"[Resistor {OhmsValue}Ω] Cannot infer socket — BreadboardLogic not found");
+            return null;
+        }
+
+        var coords = _boardLogic.GetSocketCoords(known);
+        if (coords == null)
+        {
+            if (showDebugInfo)
+                Debug.LogWarning($"[Resistor {OhmsValue}Ω] Cannot infer socket — coords not found for {known.name}");
+            return null;
+        }
+
+        return _boardLogic.GetSocket(coords.Value.row + rowOffset, coords.Value.col);
     }
 
     BreadboardSocket FindNearestSocket(Transform tip)
     {
         if (tip == null) return null;
-
         Collider[] hits = Physics.OverlapSphere(tip.position, 0.005f);
         foreach (var hit in hits)
         {
@@ -100,15 +173,7 @@ public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
 
     void OnDrawGizmosSelected()
     {
-        if (legATip != null)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(legATip.position, 0.005f);
-        }
-        if (legBTip != null)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(legBTip.position, 0.005f);
-        }
+        if (legATip != null) { Gizmos.color = Color.yellow; Gizmos.DrawWireSphere(legATip.position, 0.005f); }
+        if (legBTip != null) { Gizmos.color = Color.yellow; Gizmos.DrawWireSphere(legBTip.position, 0.005f); }
     }
 }
