@@ -176,4 +176,5 @@ public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
         if (legATip != null) { Gizmos.color = Color.yellow; Gizmos.DrawWireSphere(legATip.position, 0.005f); }
         if (legBTip != null) { Gizmos.color = Color.yellow; Gizmos.DrawWireSphere(legBTip.position, 0.005f); }
     }
+
 }
