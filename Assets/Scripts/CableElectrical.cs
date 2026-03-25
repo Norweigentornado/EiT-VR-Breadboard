@@ -1,22 +1,13 @@
 using UnityEngine;
 
-/// <summary>
-/// Handles the electrical behaviour of a jumper cable.
-/// A cable is simply a near-zero resistance between two nodes.
-/// The CircuitSolver treats it as a short circuit, propagating
-/// voltage naturally without this script writing anything directly.
-/// </summary>
 [RequireComponent(typeof(CableRightAngleHybridTube))]
 public class CableElectrical : MonoBehaviour, ITwoTerminalComponent
 {
     [Header("Debug")]
     public bool showDebugInfo = false;
 
-    // Exposed so CircuitSolver can read them (same interface as ResistorComponent)
     public BreadboardNode NodeA { get; private set; }
     public BreadboardNode NodeB { get; private set; }
-
-    // Cables are treated as a very small resistance — effectively a short
     public float OhmsValue => 0.001f;
 
     private BreadboardSocket _socketA;
@@ -26,6 +17,14 @@ public class CableElectrical : MonoBehaviour, ITwoTerminalComponent
     void Awake()
     {
         _physics = GetComponent<CableRightAngleHybridTube>();
+    }
+
+    void Start()
+    {
+        if (CircuitSolver.Instance != null)
+            CircuitSolver.Instance.RegisterComponent(this);
+        else
+            Debug.LogError("[Cable] CircuitSolver not found!");
     }
 
     void OnEnable()
@@ -47,6 +46,8 @@ public class CableElectrical : MonoBehaviour, ITwoTerminalComponent
 
     void DetectSocketConnections()
     {
+        if (_physics == null) return;
+
         BreadboardSocket newA = FindNearestSocket(_physics.endA);
         BreadboardSocket newB = FindNearestSocket(_physics.endB);
 
@@ -58,15 +59,17 @@ public class CableElectrical : MonoBehaviour, ITwoTerminalComponent
             NodeB = _socketB?.node;
 
             if (showDebugInfo)
-                Debug.Log($"[Cable] A: {(NodeA != null ? "connected" : "none")}, " +
-                          $"B: {(NodeB != null ? "connected" : "none")}");
+                Debug.Log($"[Cable] Connection changed — " +
+                          $"EndA: {(newA != null ? newA.name : "disconnected")} " +
+                          $"({(NodeA != null ? $"node OK, {NodeA.solvedVoltage:F2}V" : "no node")}) | " +
+                          $"EndB: {(newB != null ? newB.name : "disconnected")} " +
+                          $"({(NodeB != null ? $"node OK, {NodeB.solvedVoltage:F2}V" : "no node")})");
         }
     }
 
     BreadboardSocket FindNearestSocket(Transform tip)
     {
         if (tip == null) return null;
-
         Collider[] hits = Physics.OverlapSphere(tip.position, 0.005f);
         foreach (var hit in hits)
         {
@@ -74,5 +77,12 @@ public class CableElectrical : MonoBehaviour, ITwoTerminalComponent
             if (s != null) return s;
         }
         return null;
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        if (_physics == null) return;
+        if (_physics.endA != null) { Gizmos.color = Color.green; Gizmos.DrawWireSphere(_physics.endA.position, 0.005f); }
+        if (_physics.endB != null) { Gizmos.color = Color.cyan; Gizmos.DrawWireSphere(_physics.endB.position, 0.005f); }
     }
 }

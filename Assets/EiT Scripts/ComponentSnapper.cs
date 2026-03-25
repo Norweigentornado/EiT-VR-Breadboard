@@ -50,6 +50,10 @@ public class ComponentSnapper : MonoBehaviour
         _isHeld = true;
         _isSnapped = false;
         _rotationWhenGrabbed = transform.rotation;
+
+        // Reset all electrical components on this object
+        foreach (var comp in GetComponents<ResistorComponent>())
+            comp.ResetSnap();
     }
 
     void OnReleased(SelectExitEventArgs args)
@@ -179,4 +183,5 @@ public class ComponentSnapper : MonoBehaviour
             Gizmos.DrawWireSphere(leg.tip.position, snapRadius);
         }
     }
+
 }

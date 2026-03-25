@@ -7,6 +7,9 @@ public class BreadboardLogic : MonoBehaviour
 {
     List<BreadboardNode> nodes = new List<BreadboardNode>();
 
+    private Dictionary<(int row, int col), BreadboardSocket> _socketLookup
+    = new Dictionary<(int row, int col), BreadboardSocket>();
+
     void Awake()
     {
         
@@ -16,6 +19,7 @@ public class BreadboardLogic : MonoBehaviour
     {
         BuildBreadboard();
         DebugPowerRails();
+        BuildSocketLookup();
     }
 
     // Sort by the number in the GameObject name, e.g. "Socket (3)" → 3, "Socket" → 0
@@ -155,5 +159,31 @@ public class BreadboardLogic : MonoBehaviour
             break;
         }
         Debug.Log("=== END POWER RAIL DEBUG ===");
+    }
+    void BuildSocketLookup()
+    {
+        int rowIndex = 0;
+        foreach (Transform row in transform)
+        {
+            if (!row.name.Contains("Row")) continue;
+            BreadboardSocket[] sockets = GetSortedSockets(row);
+            for (int col = 0; col < sockets.Length; col++)
+                _socketLookup[(rowIndex, col)] = sockets[col];
+            rowIndex++;
+        }
+    }
+
+    public BreadboardSocket GetSocket(int row, int col)
+    {
+        _socketLookup.TryGetValue((row, col), out var socket);
+        return socket;
+    }
+
+    // Given a socket, return its (row, col)
+    public (int row, int col)? GetSocketCoords(BreadboardSocket target)
+    {
+        foreach (var kvp in _socketLookup)
+            if (kvp.Value == target) return kvp.Key;
+        return null;
     }
 }
