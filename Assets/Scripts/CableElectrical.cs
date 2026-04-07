@@ -17,6 +17,7 @@ public class CableElectrical : MonoBehaviour, ITwoTerminalComponent
     private BreadboardSocket _socketA;
     private BreadboardSocket _socketB;
     private CableRightAngleHybridTube _physics;
+    private CableFlowVisualizer _flowVis;
 
     private float _nextDebugTime = 0f;
     private const float DEBUG_INTERVAL = 1f;
@@ -24,6 +25,9 @@ public class CableElectrical : MonoBehaviour, ITwoTerminalComponent
     void Awake()
     {
         _physics = GetComponent<CableRightAngleHybridTube>();
+        _flowVis = GetComponent<CableFlowVisualizer>();
+        if (_flowVis == null)
+            _flowVis = GetComponentInChildren<CableFlowVisualizer>();
     }
 
     void Start()
@@ -49,6 +53,7 @@ public class CableElectrical : MonoBehaviour, ITwoTerminalComponent
     void Update()
     {
         DetectSocketConnections();
+        UpdateFlowVisualizer();
 
         if (showDebugInfo && Time.time >= _nextDebugTime)
         {
@@ -65,6 +70,27 @@ public class CableElectrical : MonoBehaviour, ITwoTerminalComponent
             FindNearestSocket(_physics?.endA);
             FindNearestSocket(_physics?.endB);
         }
+    }
+
+    void UpdateFlowVisualizer()
+    {
+        if (_flowVis == null) return;
+
+        if (NodeA == null || NodeB == null || CircuitSolver.Instance == null)
+        {
+            _flowVis.hasCurrent = false;
+            _flowVis.current = 0f;
+            return;
+        }
+
+        // Get the actual solved current through this cable (Amps).
+        // This accounts for all resistance in the circuit.
+        float current = CircuitSolver.Instance.GetCurrent(this);
+
+        bool flowing = Mathf.Abs(current) > _flowVis.minVisibleCurrent;
+
+        _flowVis.hasCurrent = flowing;
+        _flowVis.current = current;
     }
 
     void DetectSocketConnections()
