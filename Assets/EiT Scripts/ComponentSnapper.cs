@@ -54,6 +54,8 @@ public class ComponentSnapper : MonoBehaviour
         // Reset all electrical components on this object
         foreach (var comp in GetComponents<ResistorComponent>())
             comp.ResetSnap();
+        foreach (var comp in GetComponents<LEDComponent>())
+            comp.ResetSnap();
     }
 
     void OnReleased(SelectExitEventArgs args)
@@ -122,6 +124,8 @@ public class ComponentSnapper : MonoBehaviour
         transform.rotation = _rotationWhenGrabbed;
 
         _isSnapped = true;
+        foreach (var comp in GetComponents<LEDComponent>())
+            comp.ForceDetect();
         Debug.Log($"[ComponentSnapper] Snapped '{gameObject.name}' into board.");
     }
 

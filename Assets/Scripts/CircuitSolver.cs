@@ -12,6 +12,15 @@ public class CircuitSolver : MonoBehaviour
     private readonly List<ITwoTerminalComponent> _resistors = new();
     private readonly List<BreadboardNode> _fixedNodes = new();
 
+    // Solved current per component (Amps). Positive = NodeA→NodeB.
+    private readonly Dictionary<ITwoTerminalComponent, float> _componentCurrents = new();
+
+    /// <summary>Returns the solved current (Amps) for a component. Positive = A→B.</summary>
+    public float GetCurrent(ITwoTerminalComponent comp)
+    {
+        return _componentCurrents.TryGetValue(comp, out float c) ? c : 0f;
+    }
+
     // Track last state to avoid spamming logs
     private int _lastNodeCount = -1;
     private int _lastResistorCount = -1;
@@ -152,6 +161,10 @@ public class CircuitSolver : MonoBehaviour
         if (result == null)
         {
             Debug.LogWarning("[CircuitSolver] Singular matrix — circuit may be unconnected.");
+            foreach (var node in _nodes)
+                if (!node.isVoltageSource)
+                    node.solvedVoltage = 0f;
+            _componentCurrents.Clear();
             return;
         }
 
@@ -160,6 +173,16 @@ public class CircuitSolver : MonoBehaviour
             _nodes[i].solvedVoltage = result[i];
             if (logSolverOutput)
                 Debug.Log($"[CircuitSolver] Node {i}: {result[i]:F3}V");
+        }
+
+        // Compute current through each component: I = (Va - Vb) / R
+        _componentCurrents.Clear();
+        foreach (var res in _resistors)
+        {
+            if (res.NodeA == null || res.NodeB == null || res.OhmsValue <= 0f)
+                continue;
+            float current = (res.NodeA.solvedVoltage - res.NodeB.solvedVoltage) / res.OhmsValue;
+            _componentCurrents[res] = current;
         }
     }
 

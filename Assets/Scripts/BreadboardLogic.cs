@@ -59,26 +59,14 @@ public class BreadboardLogic : MonoBehaviour
             BreadboardSocket[] sockets = GetSortedSockets(row);
             if (sockets.Length < 14) continue;
 
-            /*
-             * After sorting by name number:
-             *  "Socket"     → 0  = left GND
-             *  "Socket (1)" → 1  = left VCC
-             *  "Socket (2)" → 2  \
-             *  ...                  j–f
-             *  "Socket (6)" → 6  /
-             *  "Socket (7)" → 7  \
-             *  ...                  e–a
-             *  "Socket (11)"→ 11 /
-             *  "Socket (12)"→ 12 = right GND
-             *  "Socket (13)"→ 13 = right VCC
-             */
-
             CreateNode(sockets, 2, 6);   // j-f
             CreateNode(sockets, 7, 11);  // e-a
         }
 
         BuildPowerRails();
+        DebugAllNodes(); // add this
     }
+
 
     void BuildPowerRails()
     {
@@ -166,9 +154,16 @@ public class BreadboardLogic : MonoBehaviour
         foreach (Transform row in transform)
         {
             if (!row.name.Contains("Row")) continue;
+
             BreadboardSocket[] sockets = GetSortedSockets(row);
+
+            // Skip rows that BuildBreadboard skips, so indices stay in sync
+            if (sockets.Length < 14)
+                continue;
+
             for (int col = 0; col < sockets.Length; col++)
                 _socketLookup[(rowIndex, col)] = sockets[col];
+
             rowIndex++;
         }
     }
@@ -183,7 +178,36 @@ public class BreadboardLogic : MonoBehaviour
     public (int row, int col)? GetSocketCoords(BreadboardSocket target)
     {
         foreach (var kvp in _socketLookup)
-            if (kvp.Value == target) return kvp.Key;
+        {
+            if (kvp.Value == target)
+            {
+                Debug.Log($"[BreadboardLogic] GetSocketCoords({target.name}) → row={kvp.Key.row} col={kvp.Key.col}");
+                return kvp.Key;
+            }
+        }
+
+        Debug.LogWarning($"[BreadboardLogic] GetSocketCoords({target.name}) → NOT FOUND in lookup!");
         return null;
+    }
+
+    void DebugAllNodes()
+    {
+        Debug.Log("=== ALL NODE ASSIGNMENTS ===");
+        foreach (Transform row in transform)
+        {
+            if (!row.name.Contains("Row")) continue;
+            BreadboardSocket[] sockets = GetSortedSockets(row);
+
+            for (int i = 0; i < sockets.Length; i++)
+            {
+                var s = sockets[i];
+                if (s.node == null) continue;
+                Debug.Log($"  {row.name} socket[{i}] ({s.name}) → " +
+                          $"isVS={s.node.isVoltageSource} " +
+                          $"sourceV={s.node.sourceVoltage} " +
+                          $"nodeID={s.node.GetHashCode()}");
+            }
+        }
+        Debug.Log("=== END NODE ASSIGNMENTS ===");
     }
 }

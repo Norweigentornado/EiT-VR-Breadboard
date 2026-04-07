@@ -87,7 +87,6 @@ public class LEDComponent : MonoBehaviour, ITwoTerminalComponent
 
     void DetectSocketConnections()
     {
-        // If already snapped, only unsnap if moved away
         if (_isSnapped)
         {
             if (Vector3.Distance(transform.position, _snappedPosition) > unSnapDistance)
@@ -95,36 +94,21 @@ public class LEDComponent : MonoBehaviour, ITwoTerminalComponent
                 _isSnapped = false;
                 _anodeSocket = null;
                 _cathodeSocket = null;
-                if (showDebugInfo)
-                    Debug.Log("[LED] Unsnapped — moved away");
+                if (showDebugInfo) Debug.Log("[LED] Unsnapped — moved away");
             }
             return;
         }
 
-        // Cathode is the physically detected leg
         BreadboardSocket newCathode = FindNearestSocket(cathodeLegTip);
+        BreadboardSocket newAnode = FindNearestSocket(anodeLegTip);  // <-- detect physically
 
-        if (newCathode == null)
-        {
-            if (_cathodeSocket != null)
-            {
-                _cathodeSocket = null;
-                _anodeSocket = null;
-                if (showDebugInfo)
-                    Debug.Log("[LED] Cathode disconnected");
-            }
-            return;
-        }
+        // Fallback: if only one leg is detected, infer the other
+        if (newCathode != null && newAnode == null)
+            newAnode = InferAdjacentSocket(newCathode, rowOffset: 1);
+        else if (newAnode != null && newCathode == null)
+            newCathode = InferAdjacentSocket(newAnode, rowOffset: -1);
 
-        // Anode is inferred as the next row, same column as cathode
-        BreadboardSocket newAnode = InferAdjacentSocket(newCathode, rowOffset: 1);
-
-        if (newAnode == null)
-        {
-            if (showDebugInfo)
-                Debug.Log($"[LED] Cathode found ({newCathode.name}) but could not infer anode row");
-            return;
-        }
+        if (newAnode == null || newCathode == null) return;
 
         if (newAnode != _anodeSocket || newCathode != _cathodeSocket)
         {
@@ -134,35 +118,36 @@ public class LEDComponent : MonoBehaviour, ITwoTerminalComponent
             _snappedPosition = transform.position;
 
             if (showDebugInfo)
-                Debug.Log($"[LED] SNAPPED — " +
-                          $"Cathode={_cathodeSocket.name} ({(NodeB != null ? $"node OK, {NodeB.solvedVoltage:F2}V" : "no node")}) | " +
-                          $"Anode={_anodeSocket.name} ({(NodeA != null ? $"node OK, {NodeA.solvedVoltage:F2}V" : "no node")})");
+                Debug.Log($"[LED] SNAPPED — Cathode={_cathodeSocket.name} | Anode={_anodeSocket.name}");
         }
     }
 
     BreadboardSocket InferAdjacentSocket(BreadboardSocket known, int rowOffset)
     {
-        if (_boardLogic == null)
-        {
-            if (showDebugInfo)
-                Debug.LogWarning("[LED] Cannot infer anode — BreadboardLogic not found");
-            return null;
-        }
+        if (_boardLogic == null) return null;
 
         var coords = _boardLogic.GetSocketCoords(known);
         if (coords == null)
         {
-            if (showDebugInfo)
-                Debug.LogWarning($"[LED] Cannot infer anode — coords not found for {known.name}");
+            Debug.LogWarning($"[LED] GetSocketCoords returned null for {known.name}");
             return null;
         }
 
         BreadboardSocket inferred = _boardLogic.GetSocket(coords.Value.row + rowOffset, coords.Value.col);
 
-        if (showDebugInfo)
-            Debug.Log($"[LED] Inferred anode from cathode {known.name} " +
-                      $"at row={coords.Value.row} col={coords.Value.col} " +
-                      $"→ row={coords.Value.row + rowOffset} = {(inferred != null ? inferred.name : "NOT FOUND")}");
+        // This is the critical log
+        Debug.Log($"[LED] Cathode={known.name} row={coords.Value.row} col={coords.Value.col} " +
+                  $"→ Inferred anode row={coords.Value.row + rowOffset} col={coords.Value.col} " +
+                  $"= {(inferred != null ? inferred.name : "NULL")} " +
+                  $"isVS={inferred?.node?.isVoltageSource} " +
+                  $"sourceV={inferred?.node?.sourceVoltage}");
+
+        // Safety check — never infer a power rail socket as the anode
+        if (inferred != null && inferred.node != null && inferred.node.isVoltageSource)
+        {
+            Debug.LogWarning($"[LED] Inferred anode landed on a power rail! Rejecting.");
+            return null;
+        }
 
         return inferred;
     }
@@ -208,13 +193,17 @@ public class LEDComponent : MonoBehaviour, ITwoTerminalComponent
     BreadboardSocket FindNearestSocket(Transform tip)
     {
         if (tip == null) return null;
-        Collider[] hits = Physics.OverlapSphere(tip.position, 0.005f);
+        Collider[] hits = Physics.OverlapSphere(tip.position, 0.009f);
+        BreadboardSocket nearest = null;
+        float bestDist = float.MaxValue;
         foreach (var hit in hits)
         {
             BreadboardSocket s = hit.GetComponentInParent<BreadboardSocket>();
-            if (s != null) return s;
+            if (s == null) continue;
+            float dist = Vector3.Distance(tip.position, s.transform.position);
+            if (dist < bestDist) { bestDist = dist; nearest = s; }
         }
-        return null;
+        return nearest;
     }
 
     void OnDrawGizmosSelected()
@@ -229,5 +218,18 @@ public class LEDComponent : MonoBehaviour, ITwoTerminalComponent
             Gizmos.DrawWireSphere(_anodeSocket.transform.position, 0.005f);
             Gizmos.DrawLine(cathodeLegTip.position, _anodeSocket.transform.position);
         }
+    }
+    public void ResetSnap()
+    {
+        _isSnapped = false;
+        _anodeSocket = null;
+        _cathodeSocket = null;
+        if (showDebugInfo) Debug.Log("[LED] Snap reset externally");
+    }
+
+    public void ForceDetect()
+    {
+        _isSnapped = false; // allow re-detection
+        DetectSocketConnections();
     }
 }

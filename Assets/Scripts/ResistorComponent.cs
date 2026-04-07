@@ -11,6 +11,10 @@ public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
     public Transform legATip;
     public Transform legBTip;
 
+    [Header("Detection")]
+    [Tooltip("OverlapSphere radius for finding sockets. Must be >= ComponentSnapper.snapRadius")]
+    public float detectRadius = 0.012f;
+
     [Header("Debug")]
     public bool showDebugInfo = false;
 
@@ -29,6 +33,9 @@ public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
     private bool _isSnapped = false;
     private Vector3 _snappedPosition;
     public float unSnapDistance = 0.01f;
+
+    private float _nextDebugTime = 0f;
+    private const float DEBUG_INTERVAL = 1f;
 
     void OnEnable() { }
 
@@ -51,6 +58,21 @@ public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
     void Update()
     {
         DetectSockets();
+
+        if (showDebugInfo && Time.time >= _nextDebugTime)
+        {
+            _nextDebugTime = Time.time + DEBUG_INTERVAL;
+            Debug.Log($"[Resistor {OhmsValue}Ω] STATUS — snapped={_isSnapped} " +
+                      $"SocketA={(_socketA != null ? _socketA.name : "NULL")} " +
+                      $"SocketB={(_socketB != null ? _socketB.name : "NULL")} " +
+                      $"NodeA={(NodeA != null ? $"{NodeA.solvedVoltage:F2}V" : "NULL")} " +
+                      $"NodeB={(NodeB != null ? $"{NodeB.solvedVoltage:F2}V" : "NULL")} " +
+                      $"pos={transform.position}");
+
+            // Always probe sockets even when snapped so we can see what's around
+            FindNearestSocket(legATip);
+            FindNearestSocket(legBTip);
+        }
     }
 
     void DetectSockets()
@@ -162,18 +184,46 @@ public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
     BreadboardSocket FindNearestSocket(Transform tip)
     {
         if (tip == null) return null;
-        Collider[] hits = Physics.OverlapSphere(tip.position, 0.005f);
+
+        Collider[] hits = Physics.OverlapSphere(tip.position, detectRadius);
+
+        if (showDebugInfo)
+        {
+            Debug.Log($"[Resistor {OhmsValue}Ω] OverlapSphere at {tip.position} r={detectRadius} — {hits.Length} collider(s) hit");
+            foreach (var hit in hits)
+            {
+                BreadboardSocket s = hit.GetComponentInParent<BreadboardSocket>();
+                float dist = Vector3.Distance(tip.position, hit.transform.position);
+                Debug.Log($"  hit: '{hit.gameObject.name}' (layer={LayerMask.LayerToName(hit.gameObject.layer)}) " +
+                          $"dist={dist:F4} socket={(s != null ? s.name : "NONE")}");
+            }
+        }
+
+        BreadboardSocket nearest = null;
+        float bestDist = float.MaxValue;
+
         foreach (var hit in hits)
         {
             BreadboardSocket s = hit.GetComponentInParent<BreadboardSocket>();
-            if (s != null) return s;
+            if (s == null) continue;
+
+            float dist = Vector3.Distance(tip.position, s.transform.position);
+            if (dist < bestDist)
+            {
+                bestDist = dist;
+                nearest = s;
+            }
         }
-        return null;
+
+        if (showDebugInfo && nearest == null && hits.Length > 0)
+            Debug.LogWarning($"[Resistor {OhmsValue}Ω] {hits.Length} colliders hit but NONE had a BreadboardSocket parent!");
+
+        return nearest;
     }
 
     void OnDrawGizmosSelected()
     {
-        if (legATip != null) { Gizmos.color = Color.yellow; Gizmos.DrawWireSphere(legATip.position, 0.005f); }
-        if (legBTip != null) { Gizmos.color = Color.yellow; Gizmos.DrawWireSphere(legBTip.position, 0.005f); }
+        if (legATip != null) { Gizmos.color = Color.yellow; Gizmos.DrawWireSphere(legATip.position, detectRadius); }
+        if (legBTip != null) { Gizmos.color = Color.yellow; Gizmos.DrawWireSphere(legBTip.position, detectRadius); }
     }
 }
