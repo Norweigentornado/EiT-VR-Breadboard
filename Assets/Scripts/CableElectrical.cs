@@ -3,6 +3,10 @@ using UnityEngine;
 [RequireComponent(typeof(CableRightAngleHybridTube))]
 public class CableElectrical : MonoBehaviour, ITwoTerminalComponent
 {
+    [Header("Detection")]
+    [Tooltip("OverlapSphere radius for finding sockets")]
+    public float detectRadius = 0.012f;
+
     [Header("Debug")]
     public bool showDebugInfo = false;
 
@@ -13,6 +17,9 @@ public class CableElectrical : MonoBehaviour, ITwoTerminalComponent
     private BreadboardSocket _socketA;
     private BreadboardSocket _socketB;
     private CableRightAngleHybridTube _physics;
+
+    private float _nextDebugTime = 0f;
+    private const float DEBUG_INTERVAL = 1f;
 
     void Awake()
     {
@@ -42,6 +49,22 @@ public class CableElectrical : MonoBehaviour, ITwoTerminalComponent
     void Update()
     {
         DetectSocketConnections();
+
+        if (showDebugInfo && Time.time >= _nextDebugTime)
+        {
+            _nextDebugTime = Time.time + DEBUG_INTERVAL;
+            Debug.Log($"[Cable] STATUS — " +
+                      $"EndA pos={(_physics?.endA != null ? _physics.endA.position.ToString() : "NULL")} " +
+                      $"EndB pos={(_physics?.endB != null ? _physics.endB.position.ToString() : "NULL")} " +
+                      $"SocketA={(_socketA != null ? _socketA.name : "NULL")} " +
+                      $"SocketB={(_socketB != null ? _socketB.name : "NULL")} " +
+                      $"NodeA={(NodeA != null ? $"{NodeA.solvedVoltage:F2}V" : "NULL")} " +
+                      $"NodeB={(NodeB != null ? $"{NodeB.solvedVoltage:F2}V" : "NULL")}");
+
+            // Always probe so we can see what's around the tips
+            FindNearestSocket(_physics?.endA);
+            FindNearestSocket(_physics?.endB);
+        }
     }
 
     void DetectSocketConnections()
@@ -70,19 +93,44 @@ public class CableElectrical : MonoBehaviour, ITwoTerminalComponent
     BreadboardSocket FindNearestSocket(Transform tip)
     {
         if (tip == null) return null;
-        Collider[] hits = Physics.OverlapSphere(tip.position, 0.005f);
+
+        Collider[] hits = Physics.OverlapSphere(tip.position, detectRadius);
+
+        if (showDebugInfo && Time.time >= _nextDebugTime - 0.01f)
+        {
+            Debug.Log($"[Cable] OverlapSphere at {tip.position} r={detectRadius} — {hits.Length} collider(s) hit");
+            foreach (var hit in hits)
+            {
+                BreadboardSocket s = hit.GetComponentInParent<BreadboardSocket>();
+                float dist = Vector3.Distance(tip.position, hit.transform.position);
+                Debug.Log($"  hit: '{hit.gameObject.name}' (layer={LayerMask.LayerToName(hit.gameObject.layer)}) " +
+                          $"dist={dist:F4} socket={(s != null ? s.name : "NONE")}");
+            }
+        }
+
+        BreadboardSocket nearest = null;
+        float bestDist = float.MaxValue;
+
         foreach (var hit in hits)
         {
             BreadboardSocket s = hit.GetComponentInParent<BreadboardSocket>();
-            if (s != null) return s;
+            if (s == null) continue;
+
+            float dist = Vector3.Distance(tip.position, s.transform.position);
+            if (dist < bestDist)
+            {
+                bestDist = dist;
+                nearest = s;
+            }
         }
-        return null;
+
+        return nearest;
     }
 
     void OnDrawGizmosSelected()
     {
         if (_physics == null) return;
-        if (_physics.endA != null) { Gizmos.color = Color.green; Gizmos.DrawWireSphere(_physics.endA.position, 0.005f); }
-        if (_physics.endB != null) { Gizmos.color = Color.cyan; Gizmos.DrawWireSphere(_physics.endB.position, 0.005f); }
+        if (_physics.endA != null) { Gizmos.color = Color.green; Gizmos.DrawWireSphere(_physics.endA.position, detectRadius); }
+        if (_physics.endB != null) { Gizmos.color = Color.cyan; Gizmos.DrawWireSphere(_physics.endB.position, detectRadius); }
     }
 }

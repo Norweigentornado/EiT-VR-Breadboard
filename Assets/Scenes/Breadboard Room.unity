@@ -31880,7 +31880,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -32942,6 +32942,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e305053d165383a4d828e416243b0f7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CableElectrical
+  detectRadius: 0.012
   showDebugInfo: 0
 --- !u!1 &986374969
 GameObject:
@@ -57673,6 +57674,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e305053d165383a4d828e416243b0f7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CableElectrical
+  detectRadius: 0.012
   showDebugInfo: 0
 --- !u!1 &1700614184
 GameObject:
@@ -59974,6 +59976,7 @@ MonoBehaviour:
   <OhmsValue>k__BackingField: 220
   legATip: {fileID: 1562625770}
   legBTip: {fileID: 284937158}
+  detectRadius: 0.012
   showDebugInfo: 1
   testSocketA: {fileID: 0}
   testSocketB: {fileID: 0}
