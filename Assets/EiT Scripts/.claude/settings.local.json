@@ -4,6 +4,9 @@
       "Read(//c/Users/Jonat/OneDrive/Dokumenter/GitHub/EiT-VR-Breadboard/Assets/Scripts/**)",
       "Read(//c/Users/Jonat/OneDrive/Dokumenter/GitHub/EiT-VR-Breadboard/**)",
       "Bash(python3)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\Jonat\\OneDrive\\Dokumenter\\GitHub\\EiT-VR-Breadboard\\Assets\\Scripts"
     ]
   }
 }

@@ -27102,7 +27102,7 @@ MonoBehaviour:
   legs:
   - tip: {fileID: 515117856}
     hoveredSocket: {fileID: 0}
-  - tip: {fileID: 936305325}
+  - tip: {fileID: 804308102}
     hoveredSocket: {fileID: 0}
   hoverRadius: 0.04
   snapRadius: 0.04

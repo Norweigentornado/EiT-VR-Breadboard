@@ -163,12 +163,16 @@ public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
     {
         if (tip == null) return null;
         Collider[] hits = Physics.OverlapSphere(tip.position, 0.005f);
+        BreadboardSocket nearest = null;
+        float bestDist = float.MaxValue;
         foreach (var hit in hits)
         {
             BreadboardSocket s = hit.GetComponentInParent<BreadboardSocket>();
-            if (s != null) return s;
+            if (s == null) continue;
+            float dist = Vector3.Distance(tip.position, s.transform.position);
+            if (dist < bestDist) { bestDist = dist; nearest = s; }
         }
-        return null;
+        return nearest;
     }
 
     void OnDrawGizmosSelected()

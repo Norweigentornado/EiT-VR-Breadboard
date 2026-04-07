@@ -152,6 +152,10 @@ public class CircuitSolver : MonoBehaviour
         if (result == null)
         {
             Debug.LogWarning("[CircuitSolver] Singular matrix — circuit may be unconnected.");
+            // Zero all non-source node voltages so components (LEDs etc.) go dark
+            foreach (var node in _nodes)
+                if (!node.isVoltageSource)
+                    node.solvedVoltage = 0f;
             return;
         }
 
