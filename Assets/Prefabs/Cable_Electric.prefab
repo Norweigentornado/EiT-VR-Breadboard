@@ -450,7 +450,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.04, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3484212163231475179}
@@ -472,12 +472,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CableRightAngleHybridTube
   endA: {fileID: 3484212163231475179}
   endB: {fileID: 8755289492264448867}
+  pinA: {fileID: 0}
+  pinB: {fileID: 0}
+  pinDiameter: 0.001
+  pinLength: 0.006
+  pinLengthScale: 0.6
   boardNormal: {x: 0, y: 1, z: 0}
   liftHeight: 0.01
   bendRadius: 0.004
   bendSamples: 24
   tubeSides: 16
   wireDiameter: 0.002
+  cableScale: 12
   wireMaterial: {fileID: 2100000, guid: 1cea009e137a7034ba19af3b29968217, type: 2}
   kappa: 0.5522848
 --- !u!114 &-5567994405301061693
@@ -492,6 +498,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e305053d165383a4d828e416243b0f7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CableElectrical
+  detectRadius: 0.012
   showDebugInfo: 1
 --- !u!54 &-7313650981732765372
 Rigidbody:
