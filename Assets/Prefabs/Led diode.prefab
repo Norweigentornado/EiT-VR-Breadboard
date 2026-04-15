@@ -264,11 +264,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LEDComponent
   ledColor: {r: 1, g: 0, b: 0, a: 1}
   forwardVoltage: 2
+  internalResistance: 68
+  maxCurrent: 0.02
   anodeLegTip: {fileID: 8025562175327657537}
   cathodeLegTip: {fileID: 7765030730211266431}
-  litIntensity: 1.5
-  lightRange: 0.05
+  maxLitIntensity: 10
+  lightRange: 2
   showDebugInfo: 1
+  unSnapDistance: 0.01
 --- !u!114 &-7560913805508529751
 MonoBehaviour:
   m_ObjectHideFlags: 0
