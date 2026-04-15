@@ -192,10 +192,11 @@ public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
             Debug.Log($"[Resistor {OhmsValue}Ω] OverlapSphere at {tip.position} r={detectRadius} — {hits.Length} collider(s) hit");
             foreach (var hit in hits)
             {
+                bool isSelf = hit.transform.IsChildOf(transform) || hit.transform == transform;
                 BreadboardSocket s = hit.GetComponentInParent<BreadboardSocket>();
                 float dist = Vector3.Distance(tip.position, hit.transform.position);
                 Debug.Log($"  hit: '{hit.gameObject.name}' (layer={LayerMask.LayerToName(hit.gameObject.layer)}) " +
-                          $"dist={dist:F4} socket={(s != null ? s.name : "NONE")}");
+                          $"dist={dist:F4} socket={(s != null ? s.name : "NONE")} self={isSelf}");
             }
         }
 
@@ -204,6 +205,10 @@ public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
 
         foreach (var hit in hits)
         {
+            // Skip colliders belonging to this component
+            if (hit.transform.IsChildOf(transform) || hit.transform == transform)
+                continue;
+
             BreadboardSocket s = hit.GetComponentInParent<BreadboardSocket>();
             if (s == null) continue;
 
@@ -216,7 +221,7 @@ public class ResistorComponent : MonoBehaviour, ITwoTerminalComponent
         }
 
         if (showDebugInfo && nearest == null && hits.Length > 0)
-            Debug.LogWarning($"[Resistor {OhmsValue}Ω] {hits.Length} colliders hit but NONE had a BreadboardSocket parent!");
+            Debug.LogWarning($"[Resistor {OhmsValue}Ω] {hits.Length} colliders hit but NONE were external BreadboardSockets!");
 
         return nearest;
     }
