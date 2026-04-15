@@ -17,10 +17,6 @@ public class LEDComponent : MonoBehaviour, ITwoTerminalComponent
     [Tooltip("Shorter leg — cathode (-)")]
     public Transform cathodeLegTip;
 
-    [Header("Detection")]
-    [Tooltip("OverlapSphere radius for finding sockets")]
-    public float detectRadius = 0.012f;
-
     [Header("Light Settings")]
     public float maxLitIntensity = 2f;
     public float lightRange = 0.05f;
@@ -104,7 +100,7 @@ public class LEDComponent : MonoBehaviour, ITwoTerminalComponent
         }
 
         BreadboardSocket newCathode = FindNearestSocket(cathodeLegTip);
-        BreadboardSocket newAnode = FindNearestSocket(anodeLegTip);  // detect physically
+        BreadboardSocket newAnode = FindNearestSocket(anodeLegTip);  // <-- detect physically
 
         // Fallback: if only one leg is detected, infer the other
         if (newCathode != null && newAnode == null)
@@ -197,41 +193,32 @@ public class LEDComponent : MonoBehaviour, ITwoTerminalComponent
     BreadboardSocket FindNearestSocket(Transform tip)
     {
         if (tip == null) return null;
-
-        Collider[] hits = Physics.OverlapSphere(tip.position, detectRadius);
+        Collider[] hits = Physics.OverlapSphere(tip.position, 0.009f);
         BreadboardSocket nearest = null;
         float bestDist = float.MaxValue;
-
         foreach (var hit in hits)
         {
-            // Skip colliders belonging to this component
-            if (hit.transform.IsChildOf(transform) || hit.transform == transform)
-                continue;
-
             BreadboardSocket s = hit.GetComponentInParent<BreadboardSocket>();
             if (s == null) continue;
-
             float dist = Vector3.Distance(tip.position, s.transform.position);
             if (dist < bestDist) { bestDist = dist; nearest = s; }
         }
-
         return nearest;
     }
 
     void OnDrawGizmosSelected()
     {
-        if (cathodeLegTip != null) { Gizmos.color = Color.blue; Gizmos.DrawWireSphere(cathodeLegTip.position, detectRadius); }
-        if (anodeLegTip != null) { Gizmos.color = Color.red; Gizmos.DrawWireSphere(anodeLegTip.position, detectRadius); }
+        if (cathodeLegTip != null) { Gizmos.color = Color.blue; Gizmos.DrawWireSphere(cathodeLegTip.position, 0.005f); }
+        if (anodeLegTip != null) { Gizmos.color = Color.red; Gizmos.DrawWireSphere(anodeLegTip.position, 0.005f); }
 
         // Show inferred anode socket if snapped
         if (_anodeSocket != null)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(_anodeSocket.transform.position, detectRadius);
+            Gizmos.DrawWireSphere(_anodeSocket.transform.position, 0.005f);
             Gizmos.DrawLine(cathodeLegTip.position, _anodeSocket.transform.position);
         }
     }
-
     public void ResetSnap()
     {
         _isSnapped = false;

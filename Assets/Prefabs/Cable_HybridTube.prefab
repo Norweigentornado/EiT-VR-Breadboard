@@ -521,6 +521,7 @@ GameObject:
   - component: {fileID: 601943623604778252}
   - component: {fileID: 4424464056193763631}
   - component: {fileID: 6142521733940253963}
+  - component: {fileID: -5995233408269208329}
   m_Layer: 0
   m_Name: Cable_HybridTube
   m_TagString: Untagged
@@ -595,6 +596,20 @@ MonoBehaviour:
   dotScale: 0.003
   speedMultiplier: 0.5
   spacing: 0.08
+--- !u!114 &-5995233408269208329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5428142950757783597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e305053d165383a4d828e416243b0f7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CableElectrical
+  detectRadius: 0.012
+  showDebugInfo: 0
 --- !u!1 &5784220999318356764
 GameObject:
   m_ObjectHideFlags: 0

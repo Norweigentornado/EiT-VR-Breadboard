@@ -445,7 +445,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a9dc8b045ca7aa14f81871447fb5ac7d, type: 3}
       propertyPath: m_Name
-      value: Diode
+      value: Diode Ferdig
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -505,7 +505,7 @@ MonoBehaviour:
   anodeLegTip: {fileID: 3387957573391353548}
   cathodeLegTip: {fileID: 1071167603451944125}
   maxLitIntensity: 10
-  lightRange: 0.4
+  lightRange: 0.1
   showDebugInfo: 1
   unSnapDistance: 0.01
 --- !u!54 &1469408187553120659
